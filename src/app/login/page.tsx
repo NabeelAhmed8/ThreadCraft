@@ -89,14 +89,14 @@ export default function LoginPage() {
         {/* Error / Success Notifications */}
         {error && (
           <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2.5 text-red-700 text-xs">
-            <AlertCircle size={16} className="flex-shrink-0" />
+            <AlertCircle size={16} className="shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
           <div className="p-3.5 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2.5 text-green-700 text-xs">
-            <CheckCircle2 size={16} className="flex-shrink-0" />
+            <CheckCircle2 size={16} className="shrink-0" />
             <span>{success}</span>
           </div>
         )}
