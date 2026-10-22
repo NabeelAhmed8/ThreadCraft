@@ -1,26 +1,28 @@
 "use client";
 
-import React, { useState, useSyncExternalStore } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShoppingBag, Menu, X, Search } from "lucide-react";
+import { ShoppingBag, Menu, X, Search, User as UserIcon, LogOut } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-
-const emptySubscribe = () => () => {};
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const router = useRouter();
   const { totalItems, openCart } = useCart();
+  const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isClient, setIsClient] = useState(false);
 
-  // Hydration-safe client check without setState in effect
-  const mounted = useSyncExternalStore(
-    emptySubscribe,
-    () => true,
-    () => false
-  );
+  // Hydration-safe client activation without synchronous cascading re-render
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsClient(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const navLinks = [
     { label: "Shop All", href: "/shop" },
@@ -89,7 +91,7 @@ export default function Navbar() {
             </nav>
 
             {/* Right Action Icons */}
-            <div className="flex items-center space-x-3 sm:space-x-5">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Search Toggle */}
               <button
                 type="button"
@@ -100,15 +102,41 @@ export default function Navbar() {
                 <Search size={20} />
               </button>
 
+              {/* User Account / Auth Button */}
+              {isClient && user ? (
+                <div className="flex items-center gap-2">
+                  <span className="hidden sm:inline-block text-xs font-medium text-neutral-800">
+                    Hi, {user.name.split(" ")[0]}
+                  </span>
+                  <button
+                    onClick={logout}
+                    title="Sign Out"
+                    className="p-2 text-neutral-500 hover:text-red-600 hover:bg-neutral-100 rounded-full transition"
+                    aria-label="Sign Out"
+                  >
+                    <LogOut size={18} />
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="p-2 text-neutral-700 hover:text-black hover:bg-neutral-100 rounded-full transition"
+                  aria-label="Sign In"
+                  title="Sign In"
+                >
+                  <UserIcon size={20} />
+                </Link>
+              )}
+
               {/* Shopping Bag Button */}
               <button
                 type="button"
                 onClick={openCart}
                 className="relative p-2 text-neutral-900 hover:text-black hover:bg-neutral-100 rounded-full transition flex items-center"
-                aria-label={`Shopping Bag (${mounted ? totalItems : 0} items)`}
+                aria-label="Shopping Bag"
               >
                 <ShoppingBag size={21} />
-                {mounted && totalItems > 0 && (
+                {isClient && totalItems > 0 && (
                   <span className="absolute -top-1 -right-1 bg-black text-white text-[11px] font-semibold h-5 w-5 rounded-full flex items-center justify-center animate-pulse">
                     {totalItems}
                   </span>
@@ -155,6 +183,32 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            {/* Mobile Auth Link */}
+            <div className="pt-2">
+              {isClient && user ? (
+                <div className="flex items-center justify-between py-2 text-sm">
+                  <span className="text-neutral-700 font-medium">Logged in as {user.name}</span>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="text-red-600 text-xs font-semibold uppercase"
+                  >
+                    Log Out
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full text-center py-2.5 bg-black text-white text-xs font-semibold uppercase tracking-wider rounded"
+                >
+                  Sign In / Register
+                </Link>
+              )}
+            </div>
           </div>
         )}
       </header>

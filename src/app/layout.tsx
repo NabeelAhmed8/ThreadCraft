@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { AuthProvider } from "@/context/AuthContext";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import CartDrawer from "@/components/cart/CartDrawer";
@@ -37,12 +38,14 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full flex flex-col bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white"
       >
-        <CartProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <CartDrawer />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <CartDrawer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
