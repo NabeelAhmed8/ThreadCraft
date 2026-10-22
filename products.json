@@ -1,0 +1,237 @@
+[
+  {
+    "name": "Heavyweight Boxy Cotton Tee",
+    "slug": "heavyweight-boxy-cotton-tee",
+    "description": "320 GSM ring-spun organic cotton jersey. Cut with a structured drop shoulder, wide sleeves, and a dense ribbed collar that holds its silhouette through continuous wash cycles.",
+    "price": 45.0,
+    "compareAtPrice": 55.0,
+    "category": "men",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Washed Charcoal", "Bone White", "Sage Green"],
+    "images": [
+      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 50,
+    "featured": true
+  },
+  {
+    "name": "Relaxed Pleated Chino Trousers",
+    "slug": "relaxed-pleated-chino-trousers",
+    "description": "Tailored with a premium Japanese cotton twill. Features front double pleats, slanted pockets, and an effortless straight-leg silhouette designed for casual draping.",
+    "price": 95.0,
+    "category": "men",
+    "sizes": ["30", "32", "34", "36"],
+    "colors": ["Slate Grey", "Black", "Khaki"],
+    "images": [
+      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 35,
+    "featured": true
+  },
+  {
+    "name": "Classic Oxford Button-Down Shirt",
+    "slug": "classic-oxford-button-down-shirt",
+    "description": "100% long-staple combed cotton woven in a traditional basket-weave Oxford cloth. Features genuine shell buttons and a relaxed tailored drape.",
+    "price": 75.0,
+    "compareAtPrice": 90.0,
+    "category": "men",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Light Blue", "Chalk White"],
+    "images": [
+      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 40,
+    "featured": false
+  },
+  {
+    "name": "Structured Oversized Pique Polo",
+    "slug": "structured-oversized-pique-polo",
+    "description": "Heavyweight cotton pique knit with clean hidden placket buttons. Boxy silhouette that bridges everyday smart casual with street essentials.",
+    "price": 60.0,
+    "category": "men",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Pitch Black", "Forest Green"],
+    "images": [
+      "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 25,
+    "featured": false
+  },
+  {
+    "name": "Selvedge Raw Denim Trucker Jacket",
+    "slug": "selvedge-raw-denim-trucker-jacket",
+    "description": "14 oz unwashed raw selvedge denim crafted from sustainable indigo-dyed yarns. Matte black zinc buttons and reinforced contrast topstitching.",
+    "price": 140.0,
+    "compareAtPrice": 165.0,
+    "category": "men",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Raw Indigo", "Washed Charcoal"],
+    "images": [
+      "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 18,
+    "featured": true
+  },
+  {
+    "name": "Crisp Poplin Oversized Shirt",
+    "slug": "crisp-poplin-oversized-shirt",
+    "description": "Woven from high-thread Egyptian long-staple cotton poplin with a paper-touch finish. Features a curved split hem, dropped shoulders, and mother-of-pearl buttons.",
+    "price": 78.0,
+    "compareAtPrice": 90.0,
+    "category": "women",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Optic White", "Sky Blue Stripe"],
+    "images": [
+      "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 30,
+    "featured": true
+  },
+  {
+    "name": "Wide-Leg High-Waist Linen Trousers",
+    "slug": "wide-leg-high-waist-linen-trousers",
+    "description": "Pure Normandy flax linen pre-washed for effortless softness. High-waisted elasticized back waistband with fluid wide-leg fall.",
+    "price": 88.0,
+    "category": "women",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Oatmeal", "Earthy Clay", "Black"],
+    "images": [
+      "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 28,
+    "featured": true
+  },
+  {
+    "name": "Minimalist Ribbed Knit Midi Dress",
+    "slug": "minimalist-ribbed-knit-midi-dress",
+    "description": "A body-skimming ribbed knit silhouette made from sustainable viscose and organic cotton. Finished with subtle side slits and a high crew neck.",
+    "price": 115.0,
+    "compareAtPrice": 130.0,
+    "category": "women",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Espresso Brown", "Ivory"],
+    "images": [
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 20,
+    "featured": true
+  },
+  {
+    "name": "Cropped Boxy Pocket Tee",
+    "slug": "cropped-boxy-pocket-tee",
+    "description": "240 GSM organic cotton tee with a clean boxy crop that meets high-waisted bottoms seamlessly. Single seamless front chest pocket.",
+    "price": 38.0,
+    "category": "women",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Chalk White", "Olive", "Dusty Rose"],
+    "images": [
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 45,
+    "featured": false
+  },
+  {
+    "name": "Tailored Wool-Blend Trench Coat",
+    "slug": "tailored-wool-blend-trench-coat",
+    "description": "Structured double-breasted trench coat cut from a dense wool and gabardine blend. Features a storm flap, tie waist belt, and deep welt pockets.",
+    "price": 195.0,
+    "compareAtPrice": 240.0,
+    "category": "women",
+    "sizes": ["S", "M", "L"],
+    "colors": ["Classic Camel", "Midnight Navy"],
+    "images": [
+      "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 14,
+    "featured": true
+  },
+  {
+    "name": "500 GSM Loopback Fleece Hoodie",
+    "slug": "500-gsm-loopback-fleece-hoodie",
+    "description": "Custom-knit heavy loopback French terry. Double-layer hood without drawstrings for a minimal aesthetic, kangaroo pocket, and thick 2x2 ribbed cuffs.",
+    "price": 88.0,
+    "compareAtPrice": 110.0,
+    "category": "outerwear",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Oatmeal Melange", "Pitch Black", "Washed Slate"],
+    "images": [
+      "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 35,
+    "featured": true
+  },
+  {
+    "name": "Ultra-Fine Merino Wool Crewneck",
+    "slug": "ultra-fine-merino-wool-crewneck",
+    "description": "Spun from 19.5-micron Australian merino wool. Soft against bare skin with natural thermo-regulating properties and ribbed hems.",
+    "price": 110.0,
+    "compareAtPrice": 135.0,
+    "category": "outerwear",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Deep Navy", "Taupe Grey"],
+    "images": [
+      "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 22,
+    "featured": true
+  },
+  {
+    "name": "Reversible Quilted Liner Jacket",
+    "slug": "reversible-quilted-liner-jacket",
+    "description": "Lightweight ripstop nylon with onion-quilted recycled down-alternative insulation. Snap front closure and bound seam edges.",
+    "price": 125.0,
+    "category": "outerwear",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Military Olive", "Matte Black"],
+    "images": [
+      "https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 16,
+    "featured": false
+  },
+  {
+    "name": "French Terry Relaxed Sweatpants",
+    "slug": "french-terry-relaxed-sweatpants",
+    "description": "Heavyweight 450 GSM organic French terry trousers with enclosed elastic waistband, tonal cotton drawstrings, and deep side zip pockets.",
+    "price": 70.0,
+    "category": "casual",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Heather Grey", "Washed Black"],
+    "images": [
+      "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 30,
+    "featured": false
+  },
+  {
+    "name": "Washed Raw European Linen Overshirt",
+    "slug": "washed-raw-european-linen-overshirt",
+    "description": "Pure European flax linen pre-washed with natural pumice stones for immediate softness. Dual chest flap pockets and relaxed fit.",
+    "price": 85.0,
+    "category": "casual",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Sand Dune", "Olive Green"],
+    "images": [
+      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80"
+    ],
+    "inStock": true,
+    "stockCount": 25,
+    "featured": false
+  }
+]
