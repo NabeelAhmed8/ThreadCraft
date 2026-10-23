@@ -105,12 +105,15 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email input */}
           <div>
-            <label className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5">
+            <label htmlFor="login-email" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
               Email Address
             </label>
             <div className="relative">
               <input
+                id="login-email"
+                name="email"
                 type="email"
+                autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -124,7 +127,7 @@ export default function LoginPage() {
           {/* Password input */}
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <label className="block text-xs font-medium text-neutral-700 uppercase tracking-wider">
+              <label htmlFor="login-password" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider cursor-pointer">
                 Password
               </label>
               <span className="text-xs text-neutral-400 hover:text-black cursor-pointer">
@@ -133,7 +136,10 @@ export default function LoginPage() {
             </div>
             <div className="relative">
               <input
+                id="login-password"
+                name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

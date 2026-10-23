@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
     const body = await request.json();
-    const { name, email, password } = body;
+    const { name, email, phone, password } = body;
 
     // Basic Validation
     if (!name || !email || !password) {
@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
     const newUser = await User.create({
       name: name.trim(),
       email: normalizedEmail,
+      phone: phone ? phone.trim() : "",
       password: hashedPassword,
       role: "customer",
       isVerified: false,

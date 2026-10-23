@@ -1,16 +1,69 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
+export interface IAddress {
+  _id?: string;
+  id?: string;
+  label: string;
+  recipientName: string;
+  phone: string;
+  street: string;
+  apartment?: string;
+  city: string;
+  postalCode: string;
+  country: string;
+  isDefault: boolean;
+}
+
+export interface IPaymentMethod {
+  _id?: string;
+  id?: string;
+  cardHolder: string;
+  cardType: string;
+  last4: string;
+  expiry: string;
+  isDefault: boolean;
+}
+
 export interface IUser extends Document {
   name: string;
   email: string;
+  phone?: string;
   password?: string;
   role: "customer" | "admin";
   isVerified: boolean;
   verificationCode?: string;
   verificationCodeExpires?: Date;
+  addresses: IAddress[];
+  paymentMethods: IPaymentMethod[];
   createdAt: Date;
   updatedAt: Date;
 }
+
+const AddressSchema = new Schema<IAddress>(
+  {
+    label: { type: String, default: "Home" },
+    recipientName: { type: String, required: true },
+    phone: { type: String, required: true },
+    street: { type: String, required: true },
+    apartment: { type: String, default: "" },
+    city: { type: String, required: true },
+    postalCode: { type: String, default: "" },
+    country: { type: String, default: "Pakistan" },
+    isDefault: { type: Boolean, default: false },
+  },
+  { _id: true, timestamps: true }
+);
+
+const PaymentMethodSchema = new Schema<IPaymentMethod>(
+  {
+    cardHolder: { type: String, required: true },
+    cardType: { type: String, default: "Visa" },
+    last4: { type: String, required: true },
+    expiry: { type: String, required: true },
+    isDefault: { type: Boolean, default: false },
+  },
+  { _id: true, timestamps: true }
+);
 
 const UserSchema = new Schema<IUser>(
   {
@@ -29,6 +82,10 @@ const UserSchema = new Schema<IUser>(
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         "Please provide a valid email address",
       ],
+    },
+    phone: {
+      type: String,
+      default: "",
     },
     password: {
       type: String,
@@ -51,6 +108,14 @@ const UserSchema = new Schema<IUser>(
     verificationCodeExpires: {
       type: Date,
       default: null,
+    },
+    addresses: {
+      type: [AddressSchema],
+      default: [],
+    },
+    paymentMethods: {
+      type: [PaymentMethodSchema],
+      default: [],
     },
   },
   {

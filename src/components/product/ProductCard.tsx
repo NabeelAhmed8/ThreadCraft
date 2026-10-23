@@ -9,9 +9,10 @@ import { Plus, Check } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, priority = false }: ProductCardProps) {
   const { addToCart } = useCart();
   const [isAdded, setIsAdded] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>(
@@ -43,6 +44,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             src={primaryImage}
             alt={product.name}
             fill
+            priority={priority}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
           />

@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { X, Trash2, Plus, Minus, ArrowRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 
 export default function CartDrawer() {
   const {
@@ -16,6 +17,21 @@ export default function CartDrawer() {
     subtotal,
     totalItems,
   } = useCart();
+
+  // Freeze background page scrollbar whenever Cart Drawer is open
+  useLockBodyScroll(isCartOpen);
+
+  // Close on Escape key press
+  useEffect(() => {
+    if (!isCartOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeCart();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isCartOpen, closeCart]);
 
   if (!isCartOpen) return null;
 

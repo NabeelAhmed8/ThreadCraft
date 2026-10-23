@@ -2,16 +2,40 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Product } from "@/models/Product";
 
+// In-memory cache for ultra-fast product retrieval
+interface CacheEntry {
+  data: { products: unknown[]; total: number };
+  timestamp: number;
+}
+
+const productsMemoryCache = new Map<string, CacheEntry>();
+const CACHE_TTL_MS = 60 * 1000; // 60 seconds TTL
+
+export function clearProductsCache() {
+  productsMemoryCache.clear();
+}
+
 export async function GET(request: NextRequest) {
   try {
-    await connectToDatabase();
-
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
     const search = searchParams.get("search");
     const featured = searchParams.get("featured");
     const sort = searchParams.get("sort");
     const limit = parseInt(searchParams.get("limit") || "50", 10);
+
+    const cacheKey = `${category || ""}:${search || ""}:${featured || ""}:${sort || ""}:${limit}`;
+
+    // Return instant cached response if valid
+    const cached = productsMemoryCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return NextResponse.json(cached.data, {
+        status: 200,
+        headers: { "X-Cache": "HIT" },
+      });
+    }
+
+    await connectToDatabase();
 
     // Build MongoDB filter query
     const filter: Record<string, unknown> = {};
@@ -42,10 +66,10 @@ export async function GET(request: NextRequest) {
       sortQuery = { createdAt: -1 };
     }
 
-    const [products, total] = await Promise.all([
-      Product.find(filter).sort(sortQuery).limit(limit).lean(),
-      Product.countDocuments(filter),
-    ]);
+    const products = await Product.find(filter)
+      .sort(sortQuery)
+      .limit(limit)
+      .lean();
 
     // Format _id to id string
     const formattedProducts = products.map((p) => ({
@@ -53,13 +77,21 @@ export async function GET(request: NextRequest) {
       id: p._id.toString(),
     }));
 
-    return NextResponse.json(
-      {
-        products: formattedProducts,
-        total,
-      },
-      { status: 200 }
-    );
+    const responsePayload = {
+      products: formattedProducts,
+      total: formattedProducts.length,
+    };
+
+    // Store in memory cache
+    productsMemoryCache.set(cacheKey, {
+      data: responsePayload,
+      timestamp: Date.now(),
+    });
+
+    return NextResponse.json(responsePayload, {
+      status: 200,
+      headers: { "X-Cache": "MISS" },
+    });
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : "Failed to fetch products from MongoDB";
@@ -74,6 +106,9 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
     const body = await request.json();
+
+    // Invalidate cache on mutations
+    clearProductsCache();
 
     // Support both bulk insertion (array of products) and single product insertion
     if (Array.isArray(body)) {

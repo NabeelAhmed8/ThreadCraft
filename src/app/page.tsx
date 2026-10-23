@@ -4,8 +4,35 @@ import ValuesBanner from "@/components/home/ValuesBanner";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import CategoriesShowcase from "@/components/home/CategoriesShowcase";
 import Link from "next/link";
+import { connectToDatabase } from "@/lib/mongodb";
+import { Product } from "@/models/Product";
+import { Product as ProductType } from "@/types";
 
-export default function HomePage() {
+// Server-side instant pre-fetch from MongoDB
+async function getInitialFeaturedProducts(): Promise<ProductType[]> {
+  try {
+    await connectToDatabase();
+    const docs = await Product.find({ featured: true })
+      .sort({ createdAt: -1 })
+      .limit(8)
+      .lean();
+
+    return docs.map((p) => ({
+      ...p,
+      id: p._id.toString(),
+      _id: p._id.toString(),
+      createdAt: p.createdAt ? p.createdAt.toISOString() : undefined,
+      updatedAt: p.updatedAt ? p.updatedAt.toISOString() : undefined,
+    })) as unknown as ProductType[];
+  } catch (err) {
+    console.error("Server-side product pre-fetch notice:", err);
+    return [];
+  }
+}
+
+export default async function HomePage() {
+  const featuredProducts = await getInitialFeaturedProducts();
+
   return (
     <div>
       {/* Hero Section */}
@@ -14,8 +41,8 @@ export default function HomePage() {
       {/* Values & Guarantees Bar */}
       <ValuesBanner />
 
-      {/* Dynamic Featured Products (Direct from Backend API) */}
-      <FeaturedProducts />
+      {/* Dynamic Featured Products (Pre-rendered instantly with zero wait) */}
+      <FeaturedProducts initialProducts={featuredProducts} />
 
       {/* Categories Showcase */}
       <CategoriesShowcase />

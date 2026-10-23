@@ -167,12 +167,15 @@ function VerifyEmailForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email input */}
           <div>
-            <label className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5">
+            <label htmlFor="verify-email-input" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
               Email Address
             </label>
             <div className="relative">
               <input
+                id="verify-email-input"
+                name="email"
                 type="email"
+                autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -186,7 +189,7 @@ function VerifyEmailForm() {
           {/* 6-Digit Code */}
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <label className="block text-xs font-medium text-neutral-700 uppercase tracking-wider">
+              <label htmlFor="verify-code-input" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider cursor-pointer">
                 6-Digit Verification Code
               </label>
               <button
@@ -203,7 +206,10 @@ function VerifyEmailForm() {
             </div>
             <div className="relative">
               <input
+                id="verify-code-input"
+                name="verificationCode"
                 type="text"
+                autoComplete="one-time-code"
                 required
                 maxLength={6}
                 value={code}

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff, Lock, Mail, User, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User, Phone, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -12,6 +12,7 @@ export default function RegisterPage() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -48,6 +49,7 @@ export default function RegisterPage() {
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
+          phone: phone.trim(),
           password,
         }),
       });
@@ -121,12 +123,15 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name */}
           <div>
-            <label className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5">
+            <label htmlFor="register-name" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
               Full Name *
             </label>
             <div className="relative">
               <input
+                id="register-name"
+                name="name"
                 type="text"
+                autoComplete="name"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -139,12 +144,15 @@ export default function RegisterPage() {
 
           {/* Email */}
           <div>
-            <label className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5">
+            <label htmlFor="register-email" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
               Email Address *
             </label>
             <div className="relative">
               <input
+                id="register-email"
+                name="email"
                 type="email"
+                autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -155,14 +163,37 @@ export default function RegisterPage() {
             </div>
           </div>
 
+          {/* Phone Number */}
+          <div>
+            <label htmlFor="register-phone" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
+              Phone Number
+            </label>
+            <div className="relative">
+              <input
+                id="register-phone"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+92 300 1234567"
+                className="w-full bg-white border border-neutral-300 rounded-lg py-3 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition"
+              />
+              <Phone size={16} className="absolute left-3.5 top-3.5 text-neutral-400" />
+            </div>
+          </div>
+
           {/* Password */}
           <div>
-            <label className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5">
+            <label htmlFor="register-password" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
               Password * (Min 6 chars)
             </label>
             <div className="relative">
               <input
+                id="register-password"
+                name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -183,12 +214,15 @@ export default function RegisterPage() {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5">
+            <label htmlFor="register-confirm-password" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
               Confirm Password *
             </label>
             <div className="relative">
               <input
+                id="register-confirm-password"
+                name="confirmPassword"
                 type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -205,6 +239,8 @@ export default function RegisterPage() {
               type="checkbox"
               required
               id="terms"
+              name="terms"
+              autoComplete="off"
               className="mt-0.5 h-3.5 w-3.5 rounded border-neutral-300 text-black focus:ring-black"
             />
             <label htmlFor="terms" className="text-[11px] text-neutral-500 leading-snug">

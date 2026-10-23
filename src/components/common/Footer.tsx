@@ -1,9 +1,48 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+
+    setLoading(true);
+    setFeedback(null);
+
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to subscribe. Please try again.");
+      }
+
+      setFeedback({ type: "success", message: data.message });
+      setEmail("");
+    } catch (err: unknown) {
+      setFeedback({
+        type: "error",
+        message: err instanceof Error ? err.message : "Something went wrong.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <footer className="bg-neutral-950 text-neutral-300 border-t border-neutral-900 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -82,19 +121,58 @@ export default function Footer() {
             <p className="text-xs text-neutral-400">
               Be first to receive capsule releases, archival restocks, and private studio sales.
             </p>
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-2">
+
+            <form onSubmit={handleSubscribe} className="space-y-2">
+              <label htmlFor="footer-newsletter-email" className="sr-only">
+                Email address for newsletter
+              </label>
               <input
+                id="footer-newsletter-email"
+                name="email"
                 type="email"
+                autoComplete="email"
+                required
+                disabled={loading}
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (feedback) setFeedback(null);
+                }}
                 placeholder="Enter your email"
-                className="w-full bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500"
+                className="w-full bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-400 transition disabled:opacity-50"
               />
               <button
                 type="submit"
-                className="w-full bg-white text-black text-xs font-medium uppercase tracking-wider py-2 rounded hover:bg-neutral-200 transition"
+                disabled={loading}
+                className="w-full bg-white text-black text-xs font-semibold uppercase tracking-wider py-2.5 rounded hover:bg-neutral-200 transition disabled:bg-neutral-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Subscribe
+                {loading ? (
+                  <>
+                    <Loader2 size={13} className="animate-spin" />
+                    <span>Subscribing...</span>
+                  </>
+                ) : (
+                  <span>Subscribe</span>
+                )}
               </button>
             </form>
+
+            {feedback && (
+              <div
+                className={`p-2.5 rounded text-xs flex items-start gap-2 ${
+                  feedback.type === "success"
+                    ? "bg-emerald-950/60 border border-emerald-800/80 text-emerald-300"
+                    : "bg-red-950/60 border border-red-800/80 text-red-300"
+                }`}
+              >
+                {feedback.type === "success" ? (
+                  <CheckCircle2 size={15} className="shrink-0 mt-0.5 text-emerald-400" />
+                ) : (
+                  <AlertCircle size={15} className="shrink-0 mt-0.5 text-red-400" />
+                )}
+                <span className="leading-snug">{feedback.message}</span>
+              </div>
+            )}
           </div>
         </div>
 

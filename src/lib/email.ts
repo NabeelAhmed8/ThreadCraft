@@ -176,7 +176,6 @@ export async function sendVerificationEmail({
         </div>
         <div class="footer">
           &copy; 2026 ThreadCraft Studio Inc. All rights reserved.<br>
-          Minimalist Craftsmanship &bull; Built-in Next.js Engine
         </div>
       </div>
     </body>
@@ -229,4 +228,72 @@ This code expires in 15 minutes.
     );
     return { success: true };
   }
+}
+
+/**
+ * Sends a welcome email to a new newsletter subscriber
+ */
+export async function sendNewsletterWelcomeEmail(
+  to: string
+): Promise<{ success: boolean }> {
+  const subject = "Welcome to the ThreadCraft Studio Circle";
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>${subject}</title>
+      <style>
+        body { margin: 0; padding: 0; background: #fafafa; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #171717; }
+        .container { max-width: 520px; margin: 40px auto; background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
+        .header { background: #0a0a0a; color: #ffffff; padding: 32px 24px; text-align: center; }
+        .header h1 { margin: 0; font-family: Georgia, serif; font-size: 22px; letter-spacing: 0.12em; text-transform: uppercase; }
+        .body { padding: 36px 32px; text-align: center; }
+        .title { font-family: Georgia, serif; font-size: 20px; font-weight: bold; margin-bottom: 12px; }
+        .desc { font-size: 14px; line-height: 1.6; color: #525252; margin-bottom: 24px; }
+        .button { display: inline-block; background: #000; color: #fff; text-decoration: none; padding: 12px 28px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; border-radius: 6px; }
+        .footer { background: #f5f5f5; padding: 20px; text-align: center; font-size: 11px; color: #737373; border-top: 1px solid #e5e5e5; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>ThreadCraft</h1>
+        </div>
+        <div class="body">
+          <div class="title">You Are Now in the Circle</div>
+          <div class="desc">
+            Thank you for subscribing to our studio newsletter. You will be the first to receive notice of limited seasonal capsule releases, archival restocks, and private studio events.
+          </div>
+          <a href="${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/shop" class="button">Explore Collection</a>
+        </div>
+        <div class="footer">
+          &copy; ${new Date().getFullYear()} ThreadCraft Studio. Consciously crafted essentials.
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  console.log(`\n[ThreadCraft Newsletter] New subscriber welcomed: ${to}\n`);
+
+  const transporter = createEmailTransporter();
+  if (transporter) {
+    try {
+      const from =
+        process.env.EMAIL_FROM || '"ThreadCraft Studio" <no-reply@threadcraft.com>';
+      await transporter.sendMail({
+        from,
+        to,
+        subject,
+        html: htmlContent,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("[Nodemailer Error] Could not send newsletter welcome email:", err);
+      return { success: false };
+    }
+  }
+
+  return { success: true };
 }

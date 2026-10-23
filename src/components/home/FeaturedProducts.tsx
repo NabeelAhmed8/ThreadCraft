@@ -9,13 +9,24 @@ import { ProductGridSkeleton } from "@/components/product/ProductSkeleton";
 import BackendStatusAlert from "@/components/common/BackendStatusAlert";
 import { ArrowRight } from "lucide-react";
 
-export default function FeaturedProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+interface FeaturedProductsProps {
+  initialProducts?: Product[];
+}
+
+export default function FeaturedProducts({
+  initialProducts = [],
+}: FeaturedProductsProps) {
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [loading, setLoading] = useState(initialProducts.length === 0);
   const [error, setError] = useState<string | null>(null);
   const [reloadTrigger, setReloadTrigger] = useState(0);
 
   useEffect(() => {
+    // If initialProducts was pre-rendered and no manual reload requested, skip extra client-side fetch
+    if (initialProducts.length > 0 && reloadTrigger === 0) {
+      return;
+    }
+
     let active = true;
 
     async function fetchFeatured() {
@@ -48,7 +59,7 @@ export default function FeaturedProducts() {
     return () => {
       active = false;
     };
-  }, [reloadTrigger]);
+  }, [reloadTrigger, initialProducts]);
 
   const handleRetry = () => {
     setLoading(true);
@@ -100,8 +111,12 @@ export default function FeaturedProducts() {
       {/* Products Grid */}
       {!loading && !error && products.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products.map((product, idx) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              priority={idx < 4}
+            />
           ))}
         </div>
       )}

@@ -51,6 +51,11 @@ export interface OrderPayload {
   shipping: number;
   total: number;
   paymentMethod: "cod" | "card" | "stripe";
+  cardDetails?: {
+    cardHolder: string;
+    cardNumber: string;
+    expiry: string;
+  };
   notes?: string;
 }
 

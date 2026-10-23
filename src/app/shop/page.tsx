@@ -129,8 +129,13 @@ function ShopContent() {
         {/* Sort Options */}
         <div className="flex items-center space-x-3 self-end md:self-auto">
           <SlidersHorizontal size={15} className="text-neutral-500" />
-          <span className="text-xs text-neutral-500">Sort by:</span>
+          <label htmlFor="shop-sort-by" className="text-xs text-neutral-500 cursor-pointer">
+            Sort by:
+          </label>
           <select
+            id="shop-sort-by"
+            name="sort"
+            autoComplete="off"
             value={sort}
             onChange={(e) => {
               setLoading(true);
@@ -173,8 +178,12 @@ function ShopContent() {
       {/* Products Grid */}
       {!loading && !error && products.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products.map((product, idx) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              priority={idx < 4}
+            />
           ))}
         </div>
       )}
