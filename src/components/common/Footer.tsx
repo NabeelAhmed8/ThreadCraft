@@ -122,7 +122,7 @@ export default function Footer() {
               Be first to receive capsule releases, archival restocks, and private studio sales.
             </p>
 
-            <form onSubmit={handleSubscribe} className="space-y-2">
+            <form id="footer-newsletter-form" name="newsletterForm" onSubmit={handleSubscribe} className="space-y-2">
               <label htmlFor="footer-newsletter-email" className="sr-only">
                 Email address for newsletter
               </label>
@@ -142,6 +142,8 @@ export default function Footer() {
                 className="w-full bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-400 transition disabled:opacity-50"
               />
               <button
+                id="footer-newsletter-submit"
+                name="newsletterSubmit"
                 type="submit"
                 disabled={loading}
                 className="w-full bg-white text-black text-xs font-semibold uppercase tracking-wider py-2.5 rounded hover:bg-neutral-200 transition disabled:bg-neutral-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"

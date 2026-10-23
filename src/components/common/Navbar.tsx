@@ -198,7 +198,7 @@ export default function Navbar() {
           {/* Search Dropdown Input Bar */}
           {searchOpen && (
             <div className="py-3 px-1 border-t border-neutral-100 animate-in fade-in slide-in-from-top-2 duration-150">
-              <form onSubmit={handleSearchSubmit} className="relative max-w-xl mx-auto">
+              <form id="desktop-search-form" name="desktopSearchForm" onSubmit={handleSearchSubmit} className="relative max-w-xl mx-auto">
                 <label htmlFor="desktop-nav-search" className="sr-only">
                   Search collections and products
                 </label>
@@ -269,7 +269,7 @@ export default function Navbar() {
 
               {/* Mobile In-Drawer Search Input */}
               <div className="p-4 border-b border-neutral-100">
-                <form onSubmit={handleSearchSubmit} className="relative">
+                <form id="mobile-search-form" name="mobileSearchForm" onSubmit={handleSearchSubmit} className="relative">
                   <label htmlFor="mobile-nav-search" className="sr-only">
                     Search collections
                   </label>

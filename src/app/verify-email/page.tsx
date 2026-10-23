@@ -164,7 +164,7 @@ function VerifyEmailForm() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form id="verify-email-form" name="verifyEmailForm" onSubmit={handleSubmit} className="space-y-5">
           {/* Email input */}
           <div>
             <label htmlFor="verify-email-input" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
@@ -227,6 +227,8 @@ function VerifyEmailForm() {
 
           {/* Submit button */}
           <button
+            id="verify-submit-btn"
+            name="verifySubmit"
             type="submit"
             disabled={loading || code.length !== 6}
             className="w-full flex items-center justify-center gap-2 bg-neutral-950 text-white text-xs uppercase tracking-widest font-semibold py-3.5 rounded-lg hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed transition mt-2 shadow-xs"

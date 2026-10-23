@@ -592,7 +592,7 @@ export default function ProfilePage() {
                   </p>
                 </div>
 
-                <form onSubmit={handleUpdateProfile} className="space-y-5">
+                <form id="profile-info-form" name="profileInfoForm" onSubmit={handleUpdateProfile} className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                       <label htmlFor="profile-fullname" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
@@ -657,6 +657,8 @@ export default function ProfilePage() {
 
                   <div className="pt-4 border-t border-neutral-100 flex justify-end">
                     <button
+                      id="profile-save-btn"
+                      name="saveProfile"
                       type="submit"
                       disabled={saving}
                       className="w-full sm:w-auto px-6 py-2.5 bg-neutral-950 text-white text-xs uppercase tracking-wider font-semibold rounded-lg hover:bg-neutral-800 disabled:bg-neutral-300 transition"
@@ -695,7 +697,7 @@ export default function ProfilePage() {
                     <h3 className="font-serif text-base font-bold text-neutral-900 mb-4">
                       Add New Shipping Address
                     </h3>
-                    <form onSubmit={handleAddAddress} className="space-y-4">
+                    <form id="add-address-form" name="addAddressForm" onSubmit={handleAddAddress} className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label htmlFor="address-tag" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1 cursor-pointer">
@@ -889,6 +891,8 @@ export default function ProfilePage() {
                           Cancel
                         </button>
                         <button
+                          id="address-save-btn"
+                          name="saveAddress"
                           type="submit"
                           disabled={saving}
                           className="w-full sm:w-auto px-5 py-2.5 bg-black text-white text-xs uppercase tracking-wider font-semibold rounded-lg hover:bg-neutral-800 transition"
@@ -998,7 +1002,7 @@ export default function ProfilePage() {
                     <h3 className="font-serif text-base font-bold text-neutral-900 mb-4">
                       Add Credit / Debit Card
                     </h3>
-                    <form onSubmit={handleAddPayment} className="space-y-4">
+                    <form id="add-payment-form" name="addPaymentForm" onSubmit={handleAddPayment} className="space-y-4">
                       <div>
                         <label htmlFor="payment-cardholder" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1 cursor-pointer">
                           Name on Card *
@@ -1100,6 +1104,8 @@ export default function ProfilePage() {
                           Cancel
                         </button>
                         <button
+                          id="payment-save-btn"
+                          name="savePayment"
                           type="submit"
                           disabled={saving}
                           className="w-full sm:w-auto px-5 py-2.5 bg-black text-white text-xs uppercase tracking-wider font-semibold rounded-lg hover:bg-neutral-800 transition"
@@ -1351,7 +1357,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Change Password Form */}
-                <form onSubmit={handleChangePassword} className="space-y-4 pt-2">
+                <form id="change-password-form" name="changePasswordForm" onSubmit={handleChangePassword} className="space-y-4 pt-2">
                   <h3 className="font-serif text-sm font-semibold text-neutral-900 flex items-center gap-2">
                     <Lock size={15} /> Change Wardrobe Password
                   </h3>
@@ -1410,6 +1416,8 @@ export default function ProfilePage() {
 
                   <div className="pt-3 flex justify-end">
                     <button
+                      id="password-update-btn"
+                      name="updatePassword"
                       type="submit"
                       disabled={saving}
                       className="w-full sm:w-auto px-6 py-2.5 bg-neutral-950 text-white text-xs uppercase tracking-wider font-semibold rounded-lg hover:bg-neutral-800 disabled:bg-neutral-300 transition"

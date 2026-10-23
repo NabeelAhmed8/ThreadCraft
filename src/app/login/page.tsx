@@ -102,7 +102,7 @@ export default function LoginPage() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form id="login-form" name="loginForm" onSubmit={handleSubmit} className="space-y-5">
           {/* Email input */}
           <div>
             <label htmlFor="login-email" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
@@ -160,6 +160,8 @@ export default function LoginPage() {
 
           {/* Submit button */}
           <button
+            id="login-submit-btn"
+            name="loginSubmit"
             type="submit"
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 bg-neutral-950 text-white text-xs uppercase tracking-widest font-semibold py-3.5 rounded-lg hover:bg-neutral-800 disabled:bg-neutral-400 transition mt-2 shadow-xs"

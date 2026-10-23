@@ -308,7 +308,7 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Checkout Form */}
         <div className="lg:col-span-7">
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form id="checkout-form" name="checkoutForm" onSubmit={handleSubmit} className="space-y-8">
             {/* Contact details */}
             <div className="border border-neutral-200 rounded-xl p-6 bg-white space-y-4">
               <div className="flex items-center justify-between">
@@ -642,6 +642,8 @@ export default function CheckoutPage() {
 
             {/* Submit Button */}
             <button
+              id="checkout-submit-btn"
+              name="checkoutSubmit"
               type="submit"
               disabled={submitting}
               className="w-full flex items-center justify-center gap-2 bg-black text-white text-xs uppercase tracking-widest font-semibold py-4 rounded hover:bg-neutral-800 disabled:bg-neutral-400 transition"

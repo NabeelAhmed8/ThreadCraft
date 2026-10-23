@@ -120,7 +120,7 @@ export default function RegisterPage() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form id="register-form" name="registerForm" onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name */}
           <div>
             <label htmlFor="register-name" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
@@ -250,6 +250,8 @@ export default function RegisterPage() {
 
           {/* Submit button */}
           <button
+            id="register-submit-btn"
+            name="registerSubmit"
             type="submit"
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 bg-neutral-950 text-white text-xs uppercase tracking-widest font-semibold py-3.5 rounded-lg hover:bg-neutral-800 disabled:bg-neutral-400 transition mt-4 shadow-xs"
