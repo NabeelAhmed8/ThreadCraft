@@ -253,7 +253,7 @@ export default function CheckoutPage() {
             Your delivery address {paymentMethod === "card" && "and payment card"}{" "}
             have been automatically saved to your{" "}
             <Link href="/profile" className="font-semibold underline text-black">
-              Profile Tabs
+              Account Profile
             </Link>{" "}
             for future 1-click orders.
           </span>
@@ -634,7 +634,7 @@ export default function CheckoutPage() {
               <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 text-red-800 text-xs">
                 <AlertCircle size={18} className="shrink-0 mt-0.5" />
                 <div>
-                  <strong className="block font-semibold">Backend Order Error:</strong>
+                  <strong className="block font-semibold">Order Notice:</strong>
                   <span>{error}</span>
                 </div>
               </div>

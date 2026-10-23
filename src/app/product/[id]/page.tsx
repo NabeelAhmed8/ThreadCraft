@@ -43,7 +43,7 @@ export default function ProductDetailPage({
       try {
         const res = await getProductById(productId);
         if (res.error || !res.product) {
-          setError(res.error || "Product not found on backend");
+          setError(res.error || "Product not found");
           setProduct(null);
         } else {
           setProduct(res.product);

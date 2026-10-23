@@ -55,7 +55,7 @@ function ShopContent() {
       } catch (err: unknown) {
         if (!active) return;
         setError(
-          err instanceof Error ? err.message : "Error connecting to backend API"
+          err instanceof Error ? err.message : "Unable to load collection right now."
         );
         setProducts([]);
         setTotal(0);
@@ -158,12 +158,12 @@ function ShopContent() {
       {/* Loading Skeletons */}
       {loading && <ProductGridSkeleton count={8} />}
 
-      {/* Backend Disconnected or Error Alert */}
+      {/* Disconnected or Error Alert */}
       {!loading && error && (
         <BackendStatusAlert
           error={error}
           onRetry={handleRetry}
-          message="Could not load products from backend API. Make sure your backend server is up and running."
+          message="Unable to load products right now. Please check your connection or try again."
         />
       )}
 

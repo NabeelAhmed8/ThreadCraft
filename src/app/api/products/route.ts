@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: unknown) {
     const message =
-      error instanceof Error ? error.message : "Failed to fetch products from MongoDB";
+      error instanceof Error ? error.message : "Failed to fetch products";
     return NextResponse.json(
       { error: message, products: [], total: 0 },
       { status: 500 }
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
       const inserted = await Product.insertMany(body);
       return NextResponse.json(
         {
-          message: `Successfully inserted ${inserted.length} products into MongoDB!`,
+          message: `Successfully inserted ${inserted.length} products`,
           count: inserted.length,
           products: inserted,
         },
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Product created successfully in MongoDB",
+        message: "Product created successfully",
         product: {
           ...product.toObject(),
           id: product._id.toString(),
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error: unknown) {
     const message =
-      error instanceof Error ? error.message : "Failed to create product in MongoDB";
+      error instanceof Error ? error.message : "Failed to create product";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

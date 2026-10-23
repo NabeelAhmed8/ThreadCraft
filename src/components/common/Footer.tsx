@@ -56,9 +56,6 @@ export default function Footer() {
               Modern silhouettes, enduring tailoring, and conscious essentials
               designed for effortless daily living.
             </p>
-            <div className="text-[11px] text-neutral-500 uppercase tracking-widest pt-2">
-              All data dynamically connected to MongoDB.
-            </div>
           </div>
 
           {/* Shop Links */}
@@ -183,7 +180,7 @@ export default function Footer() {
           <div className="flex space-x-6 mt-4 sm:mt-0">
             <span>Privacy Policy</span>
             <span>Terms of Service</span>
-            <span>MongoDB Connected</span>
+            <span>Cookie Preferences</span>
           </div>
         </div>
       </div>

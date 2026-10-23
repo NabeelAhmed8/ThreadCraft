@@ -116,13 +116,13 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         orderId: newOrder.orderNumber,
-        message: "Order placed and recorded in MongoDB successfully!",
+        message: "Your order has been placed successfully!",
       },
       { status: 201 }
     );
   } catch (error: unknown) {
     const message =
-      error instanceof Error ? error.message : "Failed to record order in MongoDB";
+      error instanceof Error ? error.message : "Unable to record order. Please try again.";
     return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }

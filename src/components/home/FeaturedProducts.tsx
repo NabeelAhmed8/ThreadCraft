@@ -44,7 +44,7 @@ export default function FeaturedProducts({
       } catch (err: unknown) {
         if (!active) return;
         setError(
-          err instanceof Error ? err.message : "Failed to load products from backend"
+          err instanceof Error ? err.message : "Unable to load featured products"
         );
         setProducts([]);
       } finally {
@@ -91,12 +91,12 @@ export default function FeaturedProducts({
       {/* Loading Skeleton */}
       {loading && <ProductGridSkeleton count={8} />}
 
-      {/* Error or Backend Disconnected Alert */}
+      {/* Error Alert */}
       {!loading && error && (
         <BackendStatusAlert
           error={error}
           onRetry={handleRetry}
-          message="Could not load featured products from the backend. Verify your backend server is running at the configured API endpoint."
+          message="Unable to load featured garments right now. Please try again."
         />
       )}
 

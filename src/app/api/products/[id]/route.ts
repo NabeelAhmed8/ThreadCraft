@@ -21,7 +21,7 @@ export async function GET(
 
     if (!product) {
       return NextResponse.json(
-        { error: "Product not found in MongoDB" },
+        { error: "Product not found" },
         { status: 404 }
       );
     }
@@ -86,7 +86,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Product deleted from MongoDB" });
+    return NextResponse.json({ message: "Product deleted successfully" });
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : "Error deleting product";

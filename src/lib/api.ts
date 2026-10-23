@@ -57,7 +57,7 @@ export async function getProducts(
     };
   } catch (err: unknown) {
     const errorMessage =
-      err instanceof Error ? err.message : "Failed to connect to MongoDB API";
+      err instanceof Error ? err.message : "Unable to load products right now";
     return { products: [], total: 0, error: errorMessage };
   }
 }
@@ -78,7 +78,7 @@ export async function getProductById(
     });
 
     if (!res.ok) {
-      throw new Error(`Product not found in MongoDB (${res.status})`);
+      throw new Error(`Product not found (${res.status})`);
     }
 
     const data = await res.json();
@@ -86,7 +86,7 @@ export async function getProductById(
     return { product };
   } catch (err: unknown) {
     const errorMessage =
-      err instanceof Error ? err.message : "Failed to fetch product from MongoDB";
+      err instanceof Error ? err.message : "Failed to fetch product";
     return { product: null, error: errorMessage };
   }
 }
@@ -116,7 +116,7 @@ export async function createProduct(
   } catch (err: unknown) {
     return {
       success: false,
-      error: err instanceof Error ? err.message : "Failed to POST product to MongoDB",
+      error: err instanceof Error ? err.message : "Failed to create product",
     };
   }
 }
@@ -141,11 +141,11 @@ export async function deleteProduct(
       throw new Error(data.error || data.message || `Failed to delete product (${res.status})`);
     }
 
-    return { success: true, message: data.message || "Product deleted successfully from MongoDB" };
+    return { success: true, message: data.message || "Product deleted successfully" };
   } catch (err: unknown) {
     return {
       success: false,
-      error: err instanceof Error ? err.message : "Failed to DELETE product from MongoDB",
+      error: err instanceof Error ? err.message : "Failed to delete product",
     };
   }
 }
@@ -176,7 +176,7 @@ export async function updateProduct(
   } catch (err: unknown) {
     return {
       success: false,
-      error: err instanceof Error ? err.message : "Failed to PUT product to MongoDB",
+      error: err instanceof Error ? err.message : "Failed to update product",
     };
   }
 }
@@ -237,13 +237,13 @@ export async function createOrder(
     return {
       success: true,
       orderId: data.orderId || data.id,
-      message: data.message || "Order registered in MongoDB successfully!",
+      message: data.message || "Your order has been placed successfully!",
     };
   } catch (err: unknown) {
     return {
       success: false,
       message:
-        err instanceof Error ? err.message : "Network error creating order in MongoDB.",
+        err instanceof Error ? err.message : "Unable to place your order right now. Please try again.",
     };
   }
 }

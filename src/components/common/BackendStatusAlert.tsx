@@ -37,7 +37,7 @@ export default function BackendStatusAlert({
             className="inline-flex items-center gap-2 bg-neutral-950 text-white text-xs font-medium uppercase tracking-wider px-5 py-2.5 rounded hover:bg-neutral-800 transition"
           >
             <RefreshCw size={14} />
-            <span>Retry Connection</span>
+            <span>Try Again</span>
           </button>
         </div>
       )}
