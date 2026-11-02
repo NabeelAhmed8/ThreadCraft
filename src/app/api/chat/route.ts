@@ -3,22 +3,19 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { Product } from "@/models/Product";
 import { Order } from "@/models/Order";
 import { ChatProduct } from "@/types/chat";
+import { generateGeminiContent, GeminiContentItem } from "@/lib/gemini";
 
 interface ChatRequestItem {
   role: "user" | "assistant";
   content: string;
 }
 
+/**
+ * Chat API Route
+ * Single Responsibility: Orchestrate store context (live catalog & order lookup) and dispatch to Gemini.
+ */
 export async function POST(request: NextRequest) {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "Gemini API key is not configured." },
-        { status: 500 }
-      );
-    }
-
     const body = await request.json();
     const { message, history = [] } = body as {
       message: string;
@@ -34,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     await connectToDatabase();
 
-    // 1. Fetch live product catalog from database for accurate recommendations
+    // 1. Fetch live in-stock products for dynamic catalog matching
     const liveProducts = await Product.find({ inStock: true })
       .select("_id name price category description sizes colors images")
       .limit(30)
@@ -47,7 +44,7 @@ export async function POST(request: NextRequest) {
       )
       .join("\n");
 
-    // 2. Check if user is asking about a specific order (e.g. TC-12345)
+    // 2. Real-time Order lookup if customer provided an order number (e.g. TC-12345)
     let orderContext = "";
     const orderMatch = message.match(/TC-[A-Za-z0-9]+/i);
     if (orderMatch) {
@@ -58,12 +55,12 @@ export async function POST(request: NextRequest) {
       if (order) {
         orderContext = `\nFound matching order details:\nOrder: ${order.orderNumber}\nStatus: ${order.orderStatus}\nTotal: $${order.total}\nPayment Method: ${order.paymentMethod}\nPayment Status: ${order.paymentStatus}\nCustomer: ${order.customer.fullName}`;
       } else {
-        orderContext = `\nUser searched for order '${orderMatch[0]}', but it was not found in the database. Advise them to double-check their order number or view order history inside their Profile page.`;
+        orderContext = `\nUser searched for order '${orderMatch[0]}', but it was not found in the database. Advise them to double-check their order number or view order history in their Profile page.`;
       }
     }
 
-    // 3. System Prompt for ThreadCraft AI Stylist & Concierge
-    const systemPrompt = `You are "ThreadCraft AI Stylist & Concierge", an intelligent, knowledgeable, and elegant personal shopping assistant for ThreadCraft Studio (a contemporary, minimalist clothing brand).
+    // 3. System Prompt for ThreadCraft Concierge & Stylist
+    const systemPrompt = `You are "ThreadCraft Concierge", an intelligent, knowledgeable, and elegant personal shopping assistant for ThreadCraft Studio (a contemporary, minimalist clothing brand).
 
 YOUR ROLES & RESPONSIBILITIES:
 1. PERSONALIZED STYLE & OUTFIT RECOMMENDATIONS:
@@ -71,11 +68,10 @@ YOUR ROLES & RESPONSIBILITIES:
    - Suggest color matching, garment pairings, and minimalist styling advice.
 
 2. SIZE & FIT ADVICE:
-   - Size Matrix:
-     - S (Small): Chest 36-38", Waist 30-32"
-     - M (Medium): Chest 39-41", Waist 32-34"
-     - L (Large): Chest 42-44", Waist 34-36"
-     - XL (Extra Large): Chest 45-47", Waist 36-38"
+   - S: Chest 36-38", Waist 30-32"
+   - M: Chest 39-41", Waist 32-34"
+   - L: Chest 42-44", Waist 34-36"
+   - XL: Chest 45-47", Waist 36-38"
    - Explain fit differences (boxy/relaxed oversized vs regular classic cuts).
 
 3. STORE POLICIES & ORDER ASSISTANCE:
@@ -103,10 +99,10 @@ ${orderContext ? `\nREAL-TIME ORDER CONTEXT:\n${orderContext}` : ""}
 
 Keep your responses helpful, polite, and well-structured using markdown bullet points and bold text where appropriate.`;
 
-    // 4. Format conversation history for Gemini API
-    const formattedContents = [
+    // 4. Format conversation history
+    const contents: GeminiContentItem[] = [
       ...history.map((msg) => ({
-        role: msg.role === "assistant" ? "model" : "user",
+        role: (msg.role === "assistant" ? "model" : "user") as "user" | "model",
         parts: [{ text: msg.content }],
       })),
       {
@@ -115,35 +111,13 @@ Keep your responses helpful, polite, and well-structured using markdown bullet p
       },
     ];
 
-    // 5. Call Gemini API
-    const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-    const geminiResponse = await fetch(geminiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: {
-          parts: [{ text: systemPrompt }],
-        },
-        contents: formattedContents,
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 1000,
-        },
-      }),
+    // 5. Generate content using multi-model cascade (Gemini 4 Argon down to 1.0)
+    const preferredModel = process.env.GEMINI_MODEL || "gemini-4-argon";
+    const { text: rawReply } = await generateGeminiContent({
+      systemPrompt,
+      contents,
+      preferredModel,
     });
-
-    const data = await geminiResponse.json();
-
-    if (!geminiResponse.ok) {
-      console.error("Gemini API Error:", data);
-      throw new Error(data.error?.message || "Failed to communicate with Gemini API.");
-    }
-
-    const rawReply =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "I am here to help you discover our ThreadCraft collection. What style or size are you looking for today?";
 
     // 6. Extract product tags [PRODUCT:id] to provide rich interactive cards
     const productTagRegex = /\[PRODUCT:([a-fA-F0-9]{24})\]/g;
@@ -179,4 +153,3 @@ Keep your responses helpful, polite, and well-structured using markdown bullet p
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
-
