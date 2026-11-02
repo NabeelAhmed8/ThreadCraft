@@ -4,7 +4,7 @@ interface SendVerificationEmailOptions {
   to: string;
   name: string;
   code: string;
-  type?: "signup" | "login";
+  type?: "signup" | "login" | "reset-password";
 }
 
 /**
@@ -42,11 +42,13 @@ export async function sendVerificationEmail({
   type = "signup",
 }: SendVerificationEmailOptions): Promise<{ success: boolean; previewUrl?: string }> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const verifyUrl = `${baseUrl}/verify-email?email=${encodeURIComponent(to)}&code=${encodeURIComponent(code)}`;
+  const verifyUrl = `${baseUrl}/verify-email?email=${encodeURIComponent(to)}&code=${encodeURIComponent(code)}&redirect=/profile`;
 
   const subject =
     type === "login"
       ? `${code} is your ThreadCraft Sign-in Code`
+      : type === "reset-password"
+      ? `${code} is your ThreadCraft Password Reset Code`
       : `Verify your ThreadCraft Account - Code: ${code}`;
 
   const htmlContent = `
@@ -153,11 +155,19 @@ export async function sendVerificationEmail({
           <p>Studio &bull; Essentials</p>
         </div>
         <div class="body-content">
-          <h2>${type === "login" ? "Sign-in Verification" : "Welcome to ThreadCraft"}</h2>
+          <h2>${
+            type === "login"
+              ? "Sign-in Verification"
+              : type === "reset-password"
+              ? "Reset Your Password"
+              : "Welcome to ThreadCraft"
+          }</h2>
           <p>Hi ${name || "there"},<br>
           ${
             type === "login"
               ? "Use the 6-digit verification code below to complete your secure login, or click the direct verification button."
+              : type === "reset-password"
+              ? "We received a request to reset your password. Use the 6-digit verification code below to set a new password."
               : "Thank you for joining our conscious clothing collective. Please verify your email address using the 6-digit code below or click the button."
           }</p>
 

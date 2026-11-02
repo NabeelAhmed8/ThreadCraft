@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff, Lock, Mail, User, Phone, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User, Phone, ArrowRight } from "lucide-react";
+import { AuthAlert } from "@/components/auth/AuthAlert";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -63,7 +64,7 @@ export default function RegisterPage() {
       if (data.requireVerification) {
         setSuccess("Account created! Verification code sent to your email. Redirecting...");
         setTimeout(() => {
-          router.push(`/verify-email?email=${encodeURIComponent(email.trim())}`);
+          router.push(`/verify-email?email=${encodeURIComponent(email.trim())}&redirect=/profile`);
         }, 800);
         return;
       }
@@ -72,7 +73,7 @@ export default function RegisterPage() {
       login(data.user);
 
       setTimeout(() => {
-        router.push("/shop");
+        router.push("/profile");
       }, 1200);
     } catch (err: unknown) {
       setError(
@@ -105,19 +106,8 @@ export default function RegisterPage() {
         </div>
 
         {/* Notifications */}
-        {error && (
-          <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2.5 text-red-700 text-xs">
-            <AlertCircle size={16} className="shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {success && (
-          <div className="p-3.5 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2.5 text-green-700 text-xs">
-            <CheckCircle2 size={16} className="shrink-0" />
-            <span>{success}</span>
-          </div>
-        )}
+        <AuthAlert type="error" message={error} />
+        <AuthAlert type="success" message={success} />
 
         {/* Form */}
         <form id="register-form" name="registerForm" onSubmit={handleSubmit} className="space-y-4">

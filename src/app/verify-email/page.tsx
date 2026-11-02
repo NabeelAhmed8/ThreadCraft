@@ -4,7 +4,8 @@ import React, { useState, useEffect, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { Mail, CheckCircle2, AlertCircle, ArrowRight, RefreshCw, KeyRound } from "lucide-react";
+import { Mail, ArrowRight, RefreshCw, KeyRound } from "lucide-react";
+import { AuthAlert } from "@/components/auth/AuthAlert";
 
 function VerifyEmailForm() {
   const router = useRouter();
@@ -13,6 +14,7 @@ function VerifyEmailForm() {
 
   const initialEmail = searchParams.get("email") || "";
   const initialCode = searchParams.get("code") || "";
+  const targetRedirect = searchParams.get("redirect") || "/profile";
 
   const [email, setEmail] = useState(initialEmail);
   const [code, setCode] = useState(initialCode);
@@ -54,7 +56,7 @@ function VerifyEmailForm() {
         login(data.user);
 
         setTimeout(() => {
-          router.push("/shop");
+          router.push(targetRedirect);
         }, 1200);
       } catch (err: unknown) {
         setError(
@@ -66,7 +68,7 @@ function VerifyEmailForm() {
         setLoading(false);
       }
     },
-    [login, router]
+    [login, router, targetRedirect]
   );
 
   // Automatically verify when user clicks direct button inside email link
@@ -148,20 +150,9 @@ function VerifyEmailForm() {
           </p>
         </div>
 
-        {/* Error / Success Notifications */}
-        {error && (
-          <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2.5 text-red-700 text-xs">
-            <AlertCircle size={16} className="shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {success && (
-          <div className="p-3.5 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2.5 text-green-700 text-xs">
-            <CheckCircle2 size={16} className="shrink-0" />
-            <span>{success}</span>
-          </div>
-        )}
+        {/* Notifications */}
+        <AuthAlert type="error" message={error} />
+        <AuthAlert type="success" message={success} />
 
         {/* Form */}
         <form id="verify-email-form" name="verifyEmailForm" onSubmit={handleSubmit} className="space-y-5">

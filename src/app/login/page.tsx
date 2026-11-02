@@ -1,189 +1,70 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff, Lock, Mail, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
+import { AuthHeader } from "@/components/auth/AuthHeader";
+import { AuthAlert } from "@/components/auth/AuthAlert";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { useLogin } from "@/hooks/useLogin";
 
-export default function LoginPage() {
-  const router = useRouter();
-  const { login } = useAuth();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-
-    if (!email.trim() || !password) {
-      setError("Please fill in both email and password.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Invalid credentials.");
-      }
-
-      if (data.requireVerification) {
-        setSuccess("Verification code sent to your email! Redirecting...");
-        setTimeout(() => {
-          router.push(`/verify-email?email=${encodeURIComponent(email.trim())}`);
-        }, 800);
-        return;
-      }
-
-      setSuccess("Logged in successfully! Redirecting...");
-      login(data.user);
-
-      setTimeout(() => {
-        router.push("/shop");
-      }, 1000);
-    } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : "Something went wrong. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+function LoginCard() {
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    loading,
+    error,
+    success,
+    handleSubmit,
+  } = useLogin();
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 bg-neutral-50/50">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 border border-neutral-200 rounded-2xl shadow-xs">
-        {/* Header */}
-        <div className="text-center">
-          <Link href="/" className="inline-block group mb-3">
-            <span className="font-serif text-2xl font-bold tracking-tight text-neutral-950 block">
-              THREADCRAFT
-            </span>
-            <span className="text-[10px] tracking-[0.28em] text-neutral-400 uppercase font-mono">
-              STUDIO &bull; ACCOUNT
-            </span>
-          </Link>
-          <h1 className="font-serif text-2xl font-semibold text-neutral-900 mt-2">
-            Welcome Back
-          </h1>
-          <p className="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">
-            Sign in to access your wardrobe orders and checkout effortlessly.
-          </p>
-        </div>
+    <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 border border-neutral-200 rounded-2xl shadow-xs">
+      <AuthHeader
+        title="Welcome Back"
+        subtitle="Sign in to access your wardrobe orders and checkout effortlessly."
+      />
 
-        {/* Error / Success Notifications */}
-        {error && (
-          <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2.5 text-red-700 text-xs">
-            <AlertCircle size={16} className="shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
+      <AuthAlert type="error" message={error} />
+      <AuthAlert type="success" message={success} />
 
-        {success && (
-          <div className="p-3.5 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2.5 text-green-700 text-xs">
-            <CheckCircle2 size={16} className="shrink-0" />
-            <span>{success}</span>
-          </div>
-        )}
+      <LoginForm
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        loading={loading}
+        onSubmit={handleSubmit}
+      />
 
-        {/* Form */}
-        <form id="login-form" name="loginForm" onSubmit={handleSubmit} className="space-y-5">
-          {/* Email input */}
-          <div>
-            <label htmlFor="login-email" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer">
-              Email Address
-            </label>
-            <div className="relative">
-              <input
-                id="login-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
-                className="w-full bg-white border border-neutral-300 rounded-lg py-3 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition"
-              />
-              <Mail size={16} className="absolute left-3.5 top-3.5 text-neutral-400" />
-            </div>
-          </div>
-
-          {/* Password input */}
-          <div>
-            <div className="flex justify-between items-center mb-1.5">
-              <label htmlFor="login-password" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider cursor-pointer">
-                Password
-              </label>
-              <span className="text-xs text-neutral-400 hover:text-black cursor-pointer">
-                Forgot password?
-              </span>
-            </div>
-            <div className="relative">
-              <input
-                id="login-password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-white border border-neutral-300 rounded-lg py-3 pl-10 pr-10 text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition"
-              />
-              <Lock size={16} className="absolute left-3.5 top-3.5 text-neutral-400" />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-3.5 text-neutral-400 hover:text-neutral-700"
-                aria-label="Toggle password visibility"
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          {/* Submit button */}
-          <button
-            id="login-submit-btn"
-            name="loginSubmit"
-            type="submit"
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-2 bg-neutral-950 text-white text-xs uppercase tracking-widest font-semibold py-3.5 rounded-lg hover:bg-neutral-800 disabled:bg-neutral-400 transition mt-2 shadow-xs"
+      <div className="border-t border-neutral-100 pt-6 text-center">
+        <p className="text-xs text-neutral-500">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/register"
+            className="text-neutral-950 font-semibold hover:underline"
           >
-            <span>{loading ? "Signing In..." : "Sign In"}</span>
-            {!loading && <ArrowRight size={15} />}
-          </button>
-        </form>
-
-        {/* Footer */}
-        <div className="border-t border-neutral-100 pt-6 text-center">
-          <p className="text-xs text-neutral-500">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/register"
-              className="text-neutral-950 font-semibold hover:underline"
-            >
-              Create an Account
-            </Link>
-          </p>
-        </div>
+            Create an Account
+          </Link>
+        </p>
       </div>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <div className="min-h-[80vh] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 bg-neutral-50/50">
+      <Suspense
+        fallback={
+          <div className="text-xs text-neutral-400 font-mono">
+            Loading sign in...
+          </div>
+        }
+      >
+        <LoginCard />
+      </Suspense>
     </div>
   );
 }
