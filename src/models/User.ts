@@ -125,10 +125,6 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-if (process.env.NODE_ENV !== "production") {
-  delete mongoose.models.User;
-}
-
 export const User: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 

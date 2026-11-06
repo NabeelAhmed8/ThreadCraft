@@ -7,10 +7,17 @@ interface SendVerificationEmailOptions {
   type?: "signup" | "login" | "reset-password";
 }
 
+type EmailTransporter = ReturnType<typeof nodemailer.createTransport>;
+let cachedTransporter: EmailTransporter | null | undefined = undefined;
+
 /**
- * Creates a Nodemailer transport instance
+ * Creates or retrieves a pooled Nodemailer transport instance
  */
-function createEmailTransporter() {
+function getEmailTransporter(): EmailTransporter | null {
+  if (cachedTransporter !== undefined) {
+    return cachedTransporter;
+  }
+
   const host = process.env.SMTP_HOST || "smtp.gmail.com";
   const port = parseInt(process.env.SMTP_PORT || "587", 10);
   const secure = process.env.SMTP_SECURE === "true" || port === 465;
@@ -18,18 +25,23 @@ function createEmailTransporter() {
   const pass = process.env.SMTP_PASS;
 
   if (!user || !pass) {
+    cachedTransporter = null;
     return null;
   }
 
-  return nodemailer.createTransport({
+  cachedTransporter = nodemailer.createTransport({
     host,
     port,
     secure,
+    pool: true,
+    maxConnections: 5,
     auth: {
       user,
       pass,
     },
   });
+
+  return cachedTransporter;
 }
 
 /**
@@ -212,7 +224,7 @@ This code expires in 15 minutes.
   console.log(`Direct Link: ${verifyUrl}`);
   console.log("========================================================\n");
 
-  const transporter = createEmailTransporter();
+  const transporter = getEmailTransporter();
 
   if (transporter) {
     try {
@@ -287,7 +299,7 @@ export async function sendNewsletterWelcomeEmail(
 
   console.log(`\n[ThreadCraft Newsletter] New subscriber welcomed: ${to}\n`);
 
-  const transporter = createEmailTransporter();
+  const transporter = getEmailTransporter();
   if (transporter) {
     try {
       const from =

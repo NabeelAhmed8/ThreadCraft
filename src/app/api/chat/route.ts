@@ -4,6 +4,7 @@ import { Product } from "@/models/Product";
 import { Order } from "@/models/Order";
 import { ChatProduct } from "@/types/chat";
 import { generateGeminiContent, GeminiContentItem } from "@/lib/gemini";
+import { extractTokenFromRequest, verifyToken } from "@/lib/jwt";
 
 interface ChatRequestItem {
   role: "user" | "assistant";
@@ -49,11 +50,22 @@ export async function POST(request: NextRequest) {
     const orderMatch = message.match(/TC-[A-Za-z0-9]+/i);
     if (orderMatch) {
       const order = await Order.findOne({
-        orderNumber: new RegExp(orderMatch[0], "i"),
+        orderNumber: orderMatch[0].toUpperCase(),
       }).lean();
 
       if (order) {
-        orderContext = `\nFound matching order details:\nOrder: ${order.orderNumber}\nStatus: ${order.orderStatus}\nTotal: $${order.total}\nPayment Method: ${order.paymentMethod}\nPayment Status: ${order.paymentStatus}\nCustomer: ${order.customer.fullName}`;
+        const token = extractTokenFromRequest(request);
+        const decoded = token ? verifyToken(token) : null;
+        const isAuthorized =
+          decoded &&
+          (decoded.role === "admin" ||
+            (decoded.email && decoded.email.toLowerCase() === order.customer.email.toLowerCase()));
+
+        if (isAuthorized) {
+          orderContext = `\nFound matching order details:\nOrder: ${order.orderNumber}\nStatus: ${order.orderStatus}\nTotal: $${order.total}\nPayment Method: ${order.paymentMethod}\nPayment Status: ${order.paymentStatus}\nCustomer: ${order.customer.fullName}`;
+        } else {
+          orderContext = `\nUser asked about order '${order.orderNumber}'. For customer privacy and security, tell the user they must be signed into the account that placed this order to view tracking details, or visit their Profile > Orders tab.`;
+        }
       } else {
         orderContext = `\nUser searched for order '${orderMatch[0]}', but it was not found in the database. Advise them to double-check their order number or view order history in their Profile page.`;
       }

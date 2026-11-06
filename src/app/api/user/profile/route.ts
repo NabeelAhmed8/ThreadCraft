@@ -1,24 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongodb";
-import { User } from "@/models/User";
-import { verifyToken } from "@/lib/jwt";
+import { getAuthUser } from "@/lib/jwt";
 import bcrypt from "bcryptjs";
-
-// Helper to get authenticated user from request token
-async function getAuthUser(request: NextRequest) {
-  const token =
-    request.cookies.get("token")?.value ||
-    (request.headers.get("authorization")?.startsWith("Bearer ")
-      ? request.headers.get("authorization")?.split(" ")[1]
-      : null);
-
-  if (!token) return null;
-  const decoded = verifyToken(token);
-  if (!decoded || !decoded.userId) return null;
-
-  await connectToDatabase();
-  return User.findById(decoded.userId);
-}
 
 // GET: Retrieve user profile
 export async function GET(request: NextRequest) {

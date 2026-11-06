@@ -1,23 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongodb";
-import { User, IAddress } from "@/models/User";
-import { verifyToken } from "@/lib/jwt";
+import { IAddress } from "@/models/User";
+import { getAuthUser } from "@/lib/jwt";
 import mongoose from "mongoose";
-
-async function getAuthUser(request: NextRequest) {
-  const token =
-    request.cookies.get("token")?.value ||
-    (request.headers.get("authorization")?.startsWith("Bearer ")
-      ? request.headers.get("authorization")?.split(" ")[1]
-      : null);
-
-  if (!token) return null;
-  const decoded = verifyToken(token);
-  if (!decoded || !decoded.userId) return null;
-
-  await connectToDatabase();
-  return User.findById(decoded.userId);
-}
 
 // POST: Add new address or update existing
 export async function POST(request: NextRequest) {

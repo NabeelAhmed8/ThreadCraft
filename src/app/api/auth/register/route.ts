@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
@@ -39,8 +40,8 @@ export async function POST(request: NextRequest) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Generate 6-digit verification code
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    // Generate cryptographically secure 6-digit verification code
+    const verificationCode = crypto.randomInt(100000, 1000000).toString();
     const verificationCodeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
 
     // Create user in MongoDB

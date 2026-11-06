@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Product } from "@/models/Product";
+import { extractTokenFromRequest, verifyToken } from "@/lib/jwt";
 
-// In-memory cache for ultra-fast product retrieval
+// In-memory bounded cache for ultra-fast product retrieval
 interface CacheEntry {
   data: { products: unknown[]; total: number };
   timestamp: number;
@@ -10,6 +11,11 @@ interface CacheEntry {
 
 const productsMemoryCache = new Map<string, CacheEntry>();
 const CACHE_TTL_MS = 60 * 1000; // 60 seconds TTL
+const MAX_CACHE_ENTRIES = 100; // Bounded capacity prevents memory leak
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 export function clearProductsCache() {
   productsMemoryCache.clear();
@@ -41,7 +47,8 @@ export async function GET(request: NextRequest) {
     const filter: Record<string, unknown> = {};
 
     if (category) {
-      filter.category = { $regex: new RegExp(`^${category}$`, "i") };
+      const safeCategory = escapeRegex(category.trim());
+      filter.category = { $regex: new RegExp(`^${safeCategory}$`, "i") };
     }
 
     if (featured === "true") {
@@ -49,10 +56,11 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
+      const safeSearch = escapeRegex(search.trim());
       filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { category: { $regex: search, $options: "i" } },
+        { name: { $regex: safeSearch, $options: "i" } },
+        { description: { $regex: safeSearch, $options: "i" } },
+        { category: { $regex: safeSearch, $options: "i" } },
       ];
     }
 
@@ -82,7 +90,11 @@ export async function GET(request: NextRequest) {
       total: formattedProducts.length,
     };
 
-    // Store in memory cache
+    // Store in bounded memory cache (FIFO eviction)
+    if (productsMemoryCache.size >= MAX_CACHE_ENTRIES) {
+      const oldestKey = productsMemoryCache.keys().next().value;
+      if (oldestKey) productsMemoryCache.delete(oldestKey);
+    }
     productsMemoryCache.set(cacheKey, {
       data: responsePayload,
       timestamp: Date.now(),
@@ -104,6 +116,22 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const token = extractTokenFromRequest(request);
+    if (!token) {
+      return NextResponse.json(
+        { error: "Unauthorized. Admin privileges required." },
+        { status: 401 }
+      );
+    }
+
+    const decoded = verifyToken(token);
+    if (!decoded || decoded.role !== "admin") {
+      return NextResponse.json(
+        { error: "Forbidden. Admin privileges required." },
+        { status: 403 }
+      );
+    }
+
     await connectToDatabase();
     const body = await request.json();
 
