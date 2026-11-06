@@ -28,12 +28,12 @@ export function LoginForm({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <form id="login-form" name="loginForm" onSubmit={onSubmit} className="space-y-5">
+    <form id="login-form" name="loginForm" onSubmit={onSubmit} className="space-y-3.5">
       {/* Email input */}
       <div>
         <label
           htmlFor="login-email"
-          className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1.5 cursor-pointer"
+          className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1 cursor-pointer"
         >
           Email Address
         </label>
@@ -47,15 +47,15 @@ export function LoginForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="name@example.com"
-            className="w-full bg-white border border-neutral-300 rounded-lg py-3 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition"
+            className="w-full bg-white border border-neutral-300 rounded-lg py-2.5 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition"
           />
-          <Mail size={16} className="absolute left-3.5 top-3.5 text-neutral-400" />
+          <Mail size={16} className="absolute left-3.5 top-3 text-neutral-400" />
         </div>
       </div>
 
       {/* Password input */}
       <div>
-        <div className="flex justify-between items-center mb-1.5">
+        <div className="flex justify-between items-center mb-1">
           <label
             htmlFor="login-password"
             className="block text-xs font-medium text-neutral-700 uppercase tracking-wider cursor-pointer"
@@ -79,13 +79,13 @@ export function LoginForm({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full bg-white border border-neutral-300 rounded-lg py-3 pl-10 pr-10 text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition"
+            className="w-full bg-white border border-neutral-300 rounded-lg py-2.5 pl-10 pr-10 text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition"
           />
-          <Lock size={16} className="absolute left-3.5 top-3.5 text-neutral-400" />
+          <Lock size={16} className="absolute left-3.5 top-3 text-neutral-400" />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-3.5 top-3.5 text-neutral-400 hover:text-neutral-700"
+            className="absolute right-3.5 top-3 text-neutral-400 hover:text-neutral-700"
             aria-label="Toggle password visibility"
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -99,7 +99,7 @@ export function LoginForm({
         name="loginSubmit"
         type="submit"
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 bg-neutral-950 text-white text-xs uppercase tracking-widest font-semibold py-3.5 rounded-lg hover:bg-neutral-800 disabled:bg-neutral-400 transition mt-2 shadow-xs"
+        className="w-full flex items-center justify-center gap-2 bg-neutral-950 text-white text-xs uppercase tracking-widest font-semibold py-3 rounded-lg hover:bg-neutral-800 disabled:bg-neutral-400 transition mt-1 shadow-xs"
       >
         <span>{loading ? "Signing In..." : "Sign In"}</span>
         {!loading && <ArrowRight size={15} />}
@@ -107,4 +107,3 @@ export function LoginForm({
     </form>
   );
 }
-

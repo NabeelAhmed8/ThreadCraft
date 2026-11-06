@@ -18,7 +18,7 @@ export function AuthHeader({
 }: AuthHeaderProps) {
   return (
     <div className="text-center">
-      <Link href="/" className="inline-block group mb-3">
+      <Link href="/" className="inline-block group mb-1.5">
         <span className="font-serif text-2xl font-bold tracking-tight text-neutral-950 block">
           THREADCRAFT
         </span>
@@ -26,7 +26,7 @@ export function AuthHeader({
           {badge}
         </span>
       </Link>
-      <h1 className="font-serif text-2xl font-semibold text-neutral-900 mt-2">
+      <h1 className="font-serif text-xl sm:text-2xl font-semibold text-neutral-900 mt-1">
         {title}
       </h1>
       <p className="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">
@@ -35,4 +35,3 @@ export function AuthHeader({
     </div>
   );
 }
-

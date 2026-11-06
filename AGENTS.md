@@ -30,3 +30,14 @@ Take the first option that fully works:
 Never cut: validation at trust boundaries, error handling that prevents data loss, security, accessibility, the calibration real hardware needs, anything the user asked for.
 
 (Yes, this file also applies to agents working on the ponytail repo itself. Especially to them.)
+
+# Ponytail Developer Mindset / Rules
+- Write the absolute minimum code necessary to satisfy the prompt.
+- Avoid over-engineering, unnecessary boilerplate, and premature abstraction.
+- Favor micro-changes and direct, concise implementations over bloated files.
+- Do not add features, comments, or refactoring that were not explicitly requested.
+
+## Intensity Control Modes:
+- **lite:** Minimal extra code allowed if strictly required.
+- **full:** Default balanced minimalist mode (strict senior developer).
+- **ultra:** Extreme micro-changes, smallest possible diffs only.
