@@ -111,6 +111,13 @@ export default function CheckoutPage() {
     }
   }, [clearCart]);
 
+  // Always scroll window to top when order is placed or verifying
+  useEffect(() => {
+    if (orderComplete || verifyingSession) {
+      window.scrollTo(0, 0);
+    }
+  }, [orderComplete, verifyingSession]);
+
   // Auto-fill from user profile when logged in
   useEffect(() => {
     let isCancelled = false;
