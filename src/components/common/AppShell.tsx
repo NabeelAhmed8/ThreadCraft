@@ -6,7 +6,7 @@ import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 
 // Routes where Navbar and Footer should not be displayed
-const NO_CHROME_ROUTES = ["/login", "/register"];
+const NO_CHROME_ROUTES = ["/login", "/register", "/verify-email"];
 
 interface AppShellProps {
   children: React.ReactNode;
