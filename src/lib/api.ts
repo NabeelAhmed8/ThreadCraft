@@ -5,7 +5,6 @@ export const API_BASE_URL =
 
 function getBaseUrl() {
   if (typeof window !== "undefined") {
-    // Relative URL works cleanly in the browser on port 3000
     return "/api";
   }
   return API_BASE_URL;
@@ -19,10 +18,6 @@ interface FetchProductsOptions {
   featured?: boolean;
 }
 
-/**
- * GET: Fetch products list from Next.js built-in API (/api/products)
- * NO mock products: returns empty array or error if MongoDB is unavailable.
- */
 export async function getProducts(
   options: FetchProductsOptions = {}
 ): Promise<{ products: Product[]; total: number; error?: string }> {
@@ -62,9 +57,6 @@ export async function getProducts(
   }
 }
 
-/**
- * GET: Fetch a single product by ID from /api/products/:id
- */
 export async function getProductById(
   id: string | number
 ): Promise<{ product: Product | null; error?: string }> {
@@ -91,9 +83,6 @@ export async function getProductById(
   }
 }
 
-/**
- * POST: Create a new product in MongoDB (/api/products)
- */
 export async function createProduct(
   productData: Partial<Product>
 ): Promise<{ success: boolean; product?: Product; error?: string }> {
@@ -121,9 +110,6 @@ export async function createProduct(
   }
 }
 
-/**
- * DELETE: Delete a product from MongoDB (/api/products/:id)
- */
 export async function deleteProduct(
   id: string | number
 ): Promise<{ success: boolean; error?: string; message?: string }> {
@@ -150,9 +136,6 @@ export async function deleteProduct(
   }
 }
 
-/**
- * PUT: Update product in MongoDB (/api/products/:id)
- */
 export async function updateProduct(
   id: string | number,
   productData: Partial<Product>
@@ -181,9 +164,6 @@ export async function updateProduct(
   }
 }
 
-/**
- * GET: Fetch categories
- */
 export async function getCategories(): Promise<{
   categories: Category[];
   error?: string;
@@ -213,9 +193,6 @@ export async function getCategories(): Promise<{
   }
 }
 
-/**
- * POST: Submit order to MongoDB (/api/orders)
- */
 export async function createOrder(
   payload: OrderPayload
 ): Promise<OrderResponse> {
@@ -244,6 +221,166 @@ export async function createOrder(
       success: false,
       message:
         err instanceof Error ? err.message : "Unable to place your order right now. Please try again.",
+    };
+  }
+}
+
+export async function getAdminStats(): Promise<{
+  success: boolean;
+  stats?: {
+    totalProducts: number;
+    totalOrders: number;
+    totalUsers: number;
+    totalRevenue: number;
+    adminCount: number;
+    customerCount: number;
+    lowStockProducts: Product[];
+    recentOrders: unknown[];
+  };
+  error?: string;
+}> {
+  try {
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}/admin/stats`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || `Failed to fetch stats (${res.status})`);
+    }
+
+    return { success: true, stats: data.stats };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to load admin stats",
+    };
+  }
+}
+
+export async function getAdminUsers(): Promise<{
+  success: boolean;
+  users?: Array<{
+    id: string;
+    name: string;
+    email: string;
+    phone?: string;
+    role: "customer" | "admin";
+    isVerified: boolean;
+    addressesCount: number;
+    createdAt: string;
+  }>;
+  error?: string;
+}> {
+  try {
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}/admin/users`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || `Failed to fetch users (${res.status})`);
+    }
+
+    return { success: true, users: data.users };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to load users",
+    };
+  }
+}
+
+export async function updateUserRole(
+  userId: string,
+  role: "customer" | "admin"
+): Promise<{ success: boolean; message?: string; error?: string }> {
+  try {
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}/admin/users/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ role }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || `Failed to update role (${res.status})`);
+    }
+
+    return { success: true, message: data.message };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to update role",
+    };
+  }
+}
+
+export async function updateOrderStatus(
+  orderId: string,
+  orderStatus: string,
+  paymentStatus?: string
+): Promise<{ success: boolean; message?: string; error?: string }> {
+  try {
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}/orders/${orderId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ orderStatus, paymentStatus }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || `Failed to update order (${res.status})`);
+    }
+
+    return { success: true, message: data.message };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to update order status",
+    };
+  }
+}
+
+export async function seedProducts(): Promise<{
+  success: boolean;
+  message?: string;
+  count?: number;
+  error?: string;
+}> {
+  try {
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}/admin/seed`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || `Failed to seed products (${res.status})`);
+    }
+
+    return { success: true, message: data.message, count: data.count };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to seed products",
     };
   }
 }

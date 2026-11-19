@@ -18,10 +18,8 @@ export default function CartDrawer() {
     totalItems,
   } = useCart();
 
-  // Freeze background page scrollbar whenever Cart Drawer is open
   useLockBodyScroll(isCartOpen);
 
-  // Close on Escape key press
   useEffect(() => {
     if (!isCartOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -37,7 +35,6 @@ export default function CartDrawer() {
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
         onClick={closeCart}
@@ -45,7 +42,6 @@ export default function CartDrawer() {
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
         <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col">
-          {/* Header */}
           <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
             <h2 className="text-lg font-medium text-neutral-900 tracking-tight">
               Shopping Bag ({totalItems})
@@ -59,7 +55,6 @@ export default function CartDrawer() {
             </button>
           </div>
 
-          {/* Cart Items List */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-12">
@@ -86,7 +81,6 @@ export default function CartDrawer() {
                   key={item.id}
                   className="flex space-x-4 pb-6 border-b border-neutral-100 last:border-b-0"
                 >
-                  {/* Item Image */}
                   <div className="relative w-20 h-24 bg-neutral-100 rounded overflow-hidden shrink-0">
                     {item.image ? (
                       <Image
@@ -103,7 +97,6 @@ export default function CartDrawer() {
                     )}
                   </div>
 
-                  {/* Item Details */}
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-start">
@@ -129,7 +122,6 @@ export default function CartDrawer() {
                       </p>
                     </div>
 
-                    {/* Quantity controls */}
                     <div className="flex items-center space-x-3 mt-3">
                       <div className="flex items-center border border-neutral-200 rounded">
                         <button
@@ -157,7 +149,6 @@ export default function CartDrawer() {
             )}
           </div>
 
-          {/* Footer / Subtotal & Checkout */}
           {cart.length > 0 && (
             <div className="p-6 border-t border-neutral-100 bg-neutral-50/50 space-y-4">
               <div className="flex justify-between items-center text-sm">

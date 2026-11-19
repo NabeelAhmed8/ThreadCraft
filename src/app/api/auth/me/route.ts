@@ -5,10 +5,8 @@ import { User } from "@/models/User";
 
 export async function GET(request: NextRequest) {
   try {
-    // 1. Check HTTP-only cookie first
     const cookieToken = request.cookies.get("token")?.value;
 
-    // 2. Fallback to Authorization Header
     const authHeader = request.headers.get("authorization");
     const headerToken = authHeader?.startsWith("Bearer ")
       ? authHeader.split(" ")[1]

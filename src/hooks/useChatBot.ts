@@ -13,17 +13,12 @@ const INITIAL_MESSAGE: ChatMessage = {
   timestamp: "Just now",
 };
 
-/**
- * useChatBot Hook
- * Single Responsibility: Manages chat messages state, API communication, and session caching.
- */
 export function useChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_MESSAGE]);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Load chat history from localStorage on initial render
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -34,17 +29,14 @@ export function useChatBot() {
         }
       }
     } catch {
-      // Storage unavailable or disabled
     }
   }, []);
 
-  // Save to localStorage whenever messages update
   const saveMessages = useCallback((updated: ChatMessage[]) => {
     setMessages(updated);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     } catch {
-      // Ignore
     }
   }, []);
 
@@ -83,7 +75,6 @@ export function useChatBot() {
     setLoading(true);
 
     try {
-      // Format history (excluding initial welcome message)
       const apiHistory = updatedWithUser
         .filter((m) => m.id !== "welcome-msg")
         .slice(-8)

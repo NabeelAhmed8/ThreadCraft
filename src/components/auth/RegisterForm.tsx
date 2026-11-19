@@ -18,10 +18,6 @@ interface RegisterFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
-/**
- * RegisterForm Component
- * Single Responsibility: Presentational input controls for user registration with compact layout.
- */
 export function RegisterForm({
   name,
   setName,
@@ -40,7 +36,6 @@ export function RegisterForm({
 
   return (
     <form id="register-form" name="registerForm" onSubmit={onSubmit} className="space-y-3">
-      {/* Name */}
       <div>
         <label htmlFor="register-name" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1 cursor-pointer">
           Full Name *
@@ -61,7 +56,6 @@ export function RegisterForm({
         </div>
       </div>
 
-      {/* Grid: Email & Phone side by side */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label htmlFor="register-email" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1 cursor-pointer">
@@ -103,7 +97,6 @@ export function RegisterForm({
         </div>
       </div>
 
-      {/* Grid: Password & Confirm Password */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label htmlFor="register-password" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1 cursor-pointer">
@@ -156,7 +149,6 @@ export function RegisterForm({
         </div>
       </div>
 
-      {/* Terms checkbox */}
       <div className="flex items-center gap-2 pt-0.5">
         <input
           type="checkbox"
@@ -170,7 +162,6 @@ export function RegisterForm({
         </label>
       </div>
 
-      {/* Submit button */}
       <button
         id="register-submit-btn"
         name="registerSubmit"

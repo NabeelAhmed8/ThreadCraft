@@ -8,7 +8,6 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { Product } from "@/models/Product";
 import { Product as ProductType } from "@/types";
 
-// Server-side instant pre-fetch from MongoDB
 async function getInitialFeaturedProducts(): Promise<ProductType[]> {
   try {
     await connectToDatabase();
@@ -35,19 +34,14 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero Section */}
       <HeroBanner />
 
-      {/* Values & Guarantees Bar */}
       <ValuesBanner />
 
-      {/* Dynamic Featured Products (Pre-rendered instantly with zero wait) */}
       <FeaturedProducts initialProducts={featuredProducts} />
 
-      {/* Categories Showcase */}
       <CategoriesShowcase />
 
-      {/* Studio Philosophy / Editorial Block */}
       <section className="bg-neutral-900 text-white py-24 border-t border-neutral-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-neutral-400">

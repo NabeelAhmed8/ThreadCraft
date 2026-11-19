@@ -60,6 +60,12 @@ const ProductSchema = new Schema<IProduct>(
     images: {
       type: [String],
       required: [true, "At least one product image is required"],
+      validate: {
+        validator: function (val: string[]) {
+          return Array.isArray(val) && val.length >= 1 && val.length <= 5;
+        },
+        message: "Product must have between 1 and 5 images",
+      },
     },
     inStock: {
       type: Boolean,

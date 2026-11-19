@@ -37,7 +37,6 @@ export default function HeroBanner() {
             </Link>
           </div>
 
-          {/* Minimalist Trust Signals */}
           <div className="mt-14 pt-8 border-t border-neutral-200 grid grid-cols-3 gap-6 text-left">
             <div>
               <span className="block text-lg font-bold text-neutral-950 font-serif">100%</span>

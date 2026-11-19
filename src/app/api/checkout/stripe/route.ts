@@ -32,7 +32,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 1. Verify Catalog Prices & Stock
     const productIds = body.items.map((i: { productId?: string; id?: string }) => i.productId || i.id).filter(Boolean);
     const dbProducts = await Product.find({ _id: { $in: productIds } });
     const productMap = new Map(dbProducts.map((p) => [p._id.toString(), p]));
@@ -77,7 +76,6 @@ export async function POST(request: NextRequest) {
     const verifiedTotal = verifiedSubtotal + shipping;
     const orderNumber = generateOrderNumber();
 
-    // 2. Pre-record Pending Order in MongoDB
     await Order.create({
       orderNumber,
       customer: body.customer,
@@ -91,14 +89,12 @@ export async function POST(request: NextRequest) {
       notes: body.notes || "",
     });
 
-    // 3. Atomically decrement inventory stock
     for (const item of verifiedItems) {
       await Product.findByIdAndUpdate(item.productId, {
         $inc: { stockCount: -item.quantity },
       });
     }
 
-    // 4. Sync Address to User Profile
     if (body.customer?.email) {
       try {
         const normalizedEmail = body.customer.email.toLowerCase().trim();
@@ -130,7 +126,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 5. In-Page PaymentIntent Mode (Stripe Embedded / Elements)
     if (body.mode === "intent") {
       const intentParams = new URLSearchParams();
       intentParams.append("amount", Math.round(verifiedTotal * 100).toString());
@@ -162,7 +157,6 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // 6. Build Hosted Stripe Checkout Session as fallback
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || request.headers.get("origin") || "http://localhost:3000";
     const params = new URLSearchParams();
 
@@ -227,7 +221,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Missing session_id parameter." }, { status: 400 });
     }
 
-    // Verify session with Stripe
     const stripeRes = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
       headers: {
         Authorization: `Bearer ${getStripeKey()}`,

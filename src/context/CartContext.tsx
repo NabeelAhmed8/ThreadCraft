@@ -26,7 +26,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Load cart from localStorage on client mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem(CART_STORAGE_KEY);
@@ -34,19 +33,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setCart(JSON.parse(stored));
       }
     } catch {
-      // LocalStorage error or parsing error fallback
     } finally {
       setIsHydrated(true);
     }
   }, []);
 
-  // Save cart to localStorage on change
   useEffect(() => {
     if (isHydrated) {
       try {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
       } catch {
-        // Storage quota exceeded or disabled
       }
     }
   }, [cart, isHydrated]);

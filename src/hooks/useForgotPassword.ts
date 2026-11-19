@@ -3,10 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-/**
- * useForgotPassword Hook
- * Single Responsibility: Manage forgot-password state transitions, timer, and API communication.
- */
 export function useForgotPassword() {
   const router = useRouter();
 
@@ -23,7 +19,6 @@ export function useForgotPassword() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Resend cooldown timer
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
@@ -31,7 +26,6 @@ export function useForgotPassword() {
     }
   }, [countdown]);
 
-  // Step 1: Request OTP code
   const handleRequestCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -71,7 +65,6 @@ export function useForgotPassword() {
     }
   };
 
-  // Step 2: Resend OTP code
   const handleResendCode = async () => {
     if (!email) return;
 
@@ -102,7 +95,6 @@ export function useForgotPassword() {
     }
   };
 
-  // Step 2: Reset password
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);

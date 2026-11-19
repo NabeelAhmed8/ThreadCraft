@@ -11,10 +11,6 @@ interface ChatRequestItem {
   content: string;
 }
 
-/**
- * Chat API Route
- * Single Responsibility: Orchestrate store context (live catalog & order lookup) and dispatch to Gemini.
- */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -32,7 +28,6 @@ export async function POST(request: NextRequest) {
 
     await connectToDatabase();
 
-    // 1. Fetch live in-stock products for dynamic catalog matching
     const liveProducts = await Product.find({ inStock: true })
       .select("_id name price category description sizes colors images")
       .limit(30)
@@ -45,7 +40,6 @@ export async function POST(request: NextRequest) {
       )
       .join("\n");
 
-    // 2. Real-time Order lookup if customer provided an order number (e.g. TC-12345)
     let orderContext = "";
     const orderMatch = message.match(/TC-[A-Za-z0-9]+/i);
     if (orderMatch) {
@@ -71,7 +65,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 3. System Prompt for ThreadCraft Concierge & Stylist
     const systemPrompt = `You are "ThreadCraft Concierge", an intelligent, knowledgeable, and elegant personal shopping assistant for ThreadCraft Studio (a contemporary, minimalist clothing brand).
 
 YOUR ROLES & RESPONSIBILITIES:
@@ -111,7 +104,6 @@ ${orderContext ? `\nREAL-TIME ORDER CONTEXT:\n${orderContext}` : ""}
 
 Keep your responses helpful, polite, and well-structured using markdown bullet points and bold text where appropriate.`;
 
-    // 4. Format conversation history
     const contents: GeminiContentItem[] = [
       ...history.map((msg) => ({
         role: (msg.role === "assistant" ? "model" : "user") as "user" | "model",
@@ -123,7 +115,6 @@ Keep your responses helpful, polite, and well-structured using markdown bullet p
       },
     ];
 
-    // 5. Generate content using multi-model cascade (Gemini 4 Argon down to 1.0)
     const preferredModel = process.env.GEMINI_MODEL || "gemini-4-argon";
     const { text: rawReply } = await generateGeminiContent({
       systemPrompt,
@@ -131,7 +122,6 @@ Keep your responses helpful, polite, and well-structured using markdown bullet p
       preferredModel,
     });
 
-    // 6. Extract product tags [PRODUCT:id] to provide rich interactive cards
     const productTagRegex = /\[PRODUCT:([a-fA-F0-9]{24})\]/g;
     const matchedProductIds = new Set<string>();
     let match;
@@ -139,10 +129,8 @@ Keep your responses helpful, polite, and well-structured using markdown bullet p
       matchedProductIds.add(match[1]);
     }
 
-    // Clean out the raw bracket tags from reply text
     const cleanReply = rawReply.replace(productTagRegex, "").trim();
 
-    // Map matched IDs to full product objects
     const recommendedProducts: ChatProduct[] = liveProducts
       .filter((p) => matchedProductIds.has(p._id.toString()))
       .map((p) => ({

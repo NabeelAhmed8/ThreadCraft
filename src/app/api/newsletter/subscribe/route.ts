@@ -24,10 +24,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // Connect to database
     await connectToDatabase();
 
-    // Check if subscriber already exists
     const existing = await Subscriber.findOne({ email: cleanEmail });
 
     if (existing) {
@@ -43,7 +41,6 @@ export async function POST(req: Request) {
         existing.status = "active";
         await existing.save();
 
-        // Optionally send welcome email in background
         sendNewsletterWelcomeEmail(cleanEmail).catch((err) =>
           console.error("Welcome email error:", err)
         );
@@ -58,14 +55,12 @@ export async function POST(req: Request) {
       }
     }
 
-    // Create new subscriber
     await Subscriber.create({
       email: cleanEmail,
       status: "active",
       source: "footer",
     });
 
-    // Send welcome email in background
     sendNewsletterWelcomeEmail(cleanEmail).catch((err) =>
       console.error("Welcome email error:", err)
     );

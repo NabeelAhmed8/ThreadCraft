@@ -24,7 +24,6 @@ function VerifyEmailForm() {
   const [success, setSuccess] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(0);
 
-  // Verification submit logic
   const handleVerify = useCallback(
     async (emailToVerify: string, codeToVerify: string) => {
       if (!emailToVerify.trim() || !codeToVerify.trim()) {
@@ -71,7 +70,6 @@ function VerifyEmailForm() {
     [login, router, targetRedirect]
   );
 
-  // Automatically verify when user clicks direct button inside email link
   useEffect(() => {
     if (initialEmail && initialCode) {
       let isCancelled = false;
@@ -87,7 +85,6 @@ function VerifyEmailForm() {
     }
   }, [initialEmail, initialCode, handleVerify]);
 
-  // Resend countdown timer
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -123,7 +120,7 @@ function VerifyEmailForm() {
       }
 
       setSuccess("A fresh 6-digit code has been sent to your email!");
-      setCountdown(60); // 60s cooldown
+      setCountdown(60);
     } catch (err: unknown) {
       setError(
         err instanceof Error ? err.message : "Error resending verification code."
@@ -135,7 +132,6 @@ function VerifyEmailForm() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 sm:p-6 bg-neutral-50/50">
-      {/* Bottom Left Corner: Back to Home Button */}
       <Link
         href="/"
         className="fixed bottom-5 left-5 z-20 flex items-center gap-2 px-3.5 py-2 text-xs font-medium text-neutral-600 hover:text-neutral-950 bg-white/90 hover:bg-white backdrop-blur-md border border-neutral-200/90 rounded-full shadow-xs transition duration-150 group"
@@ -150,7 +146,6 @@ function VerifyEmailForm() {
       </Link>
 
       <div className="max-w-md w-full space-y-3.5 sm:space-y-4 bg-white p-5 sm:p-6 border border-neutral-200 rounded-2xl shadow-xs">
-        {/* Header */}
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-10 h-10 bg-neutral-100 rounded-full mb-2 text-neutral-900">
             <KeyRound size={20} />
@@ -164,13 +159,10 @@ function VerifyEmailForm() {
           </p>
         </div>
 
-        {/* Notifications */}
         <AuthAlert type="error" message={error} />
         <AuthAlert type="success" message={success} />
 
-        {/* Form */}
         <form id="verify-email-form" name="verifyEmailForm" onSubmit={handleSubmit} className="space-y-3.5">
-          {/* Email input */}
           <div>
             <label htmlFor="verify-email-input" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider mb-1 cursor-pointer">
               Email Address
@@ -191,7 +183,6 @@ function VerifyEmailForm() {
             </div>
           </div>
 
-          {/* 6-Digit Code */}
           <div>
             <div className="flex justify-between items-center mb-1">
               <label htmlFor="verify-code-input" className="block text-xs font-medium text-neutral-700 uppercase tracking-wider cursor-pointer">
@@ -230,7 +221,6 @@ function VerifyEmailForm() {
             </p>
           </div>
 
-          {/* Submit button */}
           <button
             id="verify-submit-btn"
             name="verifySubmit"
@@ -243,7 +233,6 @@ function VerifyEmailForm() {
           </button>
         </form>
 
-        {/* Footer Link */}
         <div className="border-t border-neutral-100 pt-3 text-center">
           <Link
             href="/login"

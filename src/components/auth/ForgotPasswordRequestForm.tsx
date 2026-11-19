@@ -10,10 +10,6 @@ interface ForgotPasswordRequestFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
-/**
- * ForgotPasswordRequestForm
- * Single Responsibility: Presentational input for requesting a password reset OTP.
- */
 export function ForgotPasswordRequestForm({
   identifier,
   setIdentifier,

@@ -10,9 +10,6 @@ interface ChatMessageItemProps {
   onSelectProduct?: () => void;
 }
 
-/**
- * Format markdown bold text (**text**) and line breaks cleanly
- */
 function FormattedText({ content }: { content: string }) {
   const lines = content.split("\n");
 
@@ -21,11 +18,9 @@ function FormattedText({ content }: { content: string }) {
       {lines.map((line, idx) => {
         if (!line.trim()) return <div key={idx} className="h-1" />;
 
-        // Format bullet points
         const isBullet = line.trim().startsWith("* ") || line.trim().startsWith("- ");
         const cleaned = isBullet ? line.trim().substring(2) : line;
 
-        // Parse **bold** parts
         const parts = cleaned.split(/(\*\*[^*]+\*\*)/g);
 
         const rendered = parts.map((part, pIdx) => {
@@ -54,10 +49,6 @@ function FormattedText({ content }: { content: string }) {
   );
 }
 
-/**
- * ChatMessageItem Component
- * Single Responsibility: Renders a user or assistant message with appropriate styling and attachments.
- */
 export function ChatMessageItem({ message, onSelectProduct }: ChatMessageItemProps) {
   const isUser = message.role === "user";
 
@@ -88,7 +79,6 @@ export function ChatMessageItem({ message, onSelectProduct }: ChatMessageItemPro
           </div>
         </div>
 
-        {/* Attached Interactive Product Cards */}
         {message.products && message.products.length > 0 && (
           <div className="space-y-1.5 pt-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block px-1">

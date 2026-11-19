@@ -3,7 +3,6 @@ import { IPaymentMethod } from "@/models/User";
 import { getAuthUser } from "@/lib/jwt";
 import mongoose from "mongoose";
 
-// POST: Add new card payment method
 export async function POST(request: NextRequest) {
   try {
     const user = await getAuthUser(request);
@@ -34,7 +33,6 @@ export async function POST(request: NextRequest) {
 
     const last4 = cleanCard.slice(-4);
 
-    // Detect card type
     let cardType = "Visa";
     if (cleanCard.startsWith("5") || cleanCard.startsWith("2")) {
       cardType = "Mastercard";
@@ -42,7 +40,6 @@ export async function POST(request: NextRequest) {
       cardType = "American Express";
     }
 
-    // If marked default, unset others
     if (isDefault) {
       user.paymentMethods.forEach((card: IPaymentMethod) => {
         card.isDefault = false;
@@ -73,7 +70,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE: Remove card payment method
 export async function DELETE(request: NextRequest) {
   try {
     const user = await getAuthUser(request);

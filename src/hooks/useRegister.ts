@@ -4,10 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-/**
- * useRegister Hook
- * Single Responsibility: Manages registration state, field validation, API requests, and redirection.
- */
 export function useRegister() {
   const router = useRouter();
   const { login } = useAuth();

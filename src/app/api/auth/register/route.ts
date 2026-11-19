@@ -11,7 +11,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name, email, phone, password } = body;
 
-    // Basic Validation
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Name, email, and password are required." },
@@ -26,7 +25,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user already exists
     const normalizedEmail = email.toLowerCase().trim();
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
@@ -36,27 +34,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Generate cryptographically secure 6-digit verification code
     const verificationCode = crypto.randomInt(100000, 1000000).toString();
-    const verificationCodeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+    const verificationCodeExpires = new Date(Date.now() + 15 * 60 * 1000);
 
-    // Create user in MongoDB
+    const userCount = await User.countDocuments();
+    const ownerEmail = process.env.OWNER_EMAIL?.toLowerCase().trim();
+    const isFirstUser = userCount === 0;
+    const isDesignatedOwner = !!(ownerEmail && normalizedEmail === ownerEmail);
+    const assignedRole = (isFirstUser || isDesignatedOwner) ? "admin" : "customer";
+
     const newUser = await User.create({
       name: name.trim(),
       email: normalizedEmail,
       phone: phone ? phone.trim() : "",
       password: hashedPassword,
-      role: "customer",
+      role: assignedRole,
       isVerified: false,
       verificationCode,
       verificationCodeExpires,
     });
 
-    // Send verification email via Nodemailer
     await sendVerificationEmail({
       to: newUser.email,
       name: newUser.name,

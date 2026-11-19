@@ -116,7 +116,6 @@ export default function ProductDetailPage({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Back button */}
       <Link
         href="/shop"
         className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-neutral-500 hover:text-black mb-8 transition"
@@ -125,7 +124,6 @@ export default function ProductDetailPage({
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
-        {/* Gallery Section */}
         <div className="space-y-4">
           <div className="relative aspect-3/4 w-full bg-neutral-100 rounded-xl overflow-hidden shadow-xs">
             <Image
@@ -138,7 +136,6 @@ export default function ProductDetailPage({
             />
           </div>
 
-          {/* Thumbnail strip */}
           {images.length > 1 && (
             <div className="flex gap-3 overflow-x-auto pb-2">
               {images.map((img, idx) => (
@@ -163,7 +160,6 @@ export default function ProductDetailPage({
           )}
         </div>
 
-        {/* Product Meta Section */}
         <div className="flex flex-col justify-between">
           <div>
             <span className="text-xs font-mono uppercase tracking-widest text-neutral-500">
@@ -174,7 +170,6 @@ export default function ProductDetailPage({
               {product.name}
             </h1>
 
-            {/* Price */}
             <div className="mt-3 flex items-center gap-3">
               <span className="text-2xl font-semibold text-neutral-900">
                 ${Number(product.price).toFixed(2)}
@@ -186,13 +181,11 @@ export default function ProductDetailPage({
               )}
             </div>
 
-            {/* Description */}
             <p className="mt-6 text-sm text-neutral-600 leading-relaxed font-light whitespace-pre-line">
               {product.description ||
                 "Tailored from responsibly sourced materials. Designed for comfortable everyday wear with effortless minimalist drape."}
             </p>
 
-            {/* Size Selector */}
             {product.sizes && product.sizes.length > 0 && (
               <div className="mt-8">
                 <div className="flex justify-between items-center text-xs font-medium text-neutral-900 mb-3">
@@ -219,7 +212,6 @@ export default function ProductDetailPage({
               </div>
             )}
 
-            {/* Color Selector (if available) */}
             {product.colors && product.colors.length > 0 && (
               <div className="mt-6">
                 <span className="text-xs font-medium uppercase tracking-wider text-neutral-900 block mb-2">
@@ -243,7 +235,6 @@ export default function ProductDetailPage({
               </div>
             )}
 
-            {/* Quantity Selector */}
             <div className="mt-8 flex items-center gap-4">
               <span className="text-xs font-medium uppercase tracking-wider text-neutral-900">
                 Quantity:
@@ -265,7 +256,6 @@ export default function ProductDetailPage({
               </div>
             </div>
 
-            {/* Add to Bag Button */}
             <div className="mt-8">
               <button
                 onClick={handleAddToCart}
@@ -294,7 +284,6 @@ export default function ProductDetailPage({
             </div>
           </div>
 
-          {/* Delivery & Assurance Details */}
           <div className="mt-12 pt-8 border-t border-neutral-200 space-y-3.5 text-xs text-neutral-600">
             <div className="flex items-center gap-3">
               <Truck size={17} className="text-neutral-800 shrink-0" />

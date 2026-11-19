@@ -4,16 +4,11 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-/**
- * useLogin Hook
- * Single Responsibility: Manage login state, API communication, and redirect routing.
- */
 export function useLogin() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
 
-  // Redirect destination defaults to profile page
   const targetRedirect = searchParams.get("redirect") || "/profile";
 
   const [email, setEmail] = useState("");
@@ -48,7 +43,6 @@ export function useLogin() {
         throw new Error(data.error || "Invalid credentials.");
       }
 
-      // If multi-factor verification is required, forward user to verify-email with redirect query
       if (data.requireVerification) {
         setSuccess("Verification code sent to your email! Redirecting...");
         setTimeout(() => {
@@ -59,7 +53,6 @@ export function useLogin() {
         return;
       }
 
-      // Direct login: save user context and redirect to profile
       setSuccess("Logged in successfully! Redirecting...");
       login(data.user);
 

@@ -9,10 +9,6 @@ import { ChatQuickChips } from "@/components/chat/ChatQuickChips";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { Sparkles } from "lucide-react";
 
-/**
- * ChatWidget Component
- * Single Responsibility: Root view assembling floating launcher button and chat window.
- */
 export function ChatWidget() {
   const {
     isOpen,
@@ -27,7 +23,6 @@ export function ChatWidget() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to latest message
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,20 +31,16 @@ export function ChatWidget() {
 
   return (
     <>
-      {/* Floating launcher trigger button */}
       <ChatFloatingButton
         isOpen={isOpen}
         onClick={toggleChat}
         unreadCount={unreadCount}
       />
 
-      {/* Floating Chat Modal Window */}
       {isOpen && (
         <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[390px] h-[580px] max-h-[85vh] flex flex-col bg-neutral-950/95 backdrop-blur-xl border border-neutral-800 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-200">
-          {/* Header */}
           <ChatHeader onClose={closeChat} onClear={clearChat} />
 
-          {/* Scrollable Message List */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
             {messages.map((message) => (
               <ChatMessageItem
@@ -59,7 +50,6 @@ export function ChatWidget() {
               />
             ))}
 
-            {/* Typing Indicator */}
             {loading && (
               <div className="flex items-center gap-2 text-neutral-400 text-xs py-2 px-1">
                 <div className="w-5 h-5 rounded-full bg-neutral-900 border border-neutral-700/80 flex items-center justify-center text-amber-300">
@@ -76,10 +66,8 @@ export function ChatWidget() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Prompt Quick Chips */}
           <ChatQuickChips onSelectChip={sendMessage} disabled={loading} />
 
-          {/* Bottom Message Input Form */}
           <ChatInput onSendMessage={sendMessage} loading={loading} />
         </div>
       )}

@@ -35,7 +35,6 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   return (
     <div className="group relative flex flex-col justify-between h-full bg-white rounded-xl">
       <div>
-        {/* Product Image Box */}
         <Link
           href={`/product/${product.id}`}
           className="relative w-full aspect-3/4 bg-neutral-100 rounded-lg overflow-hidden block"
@@ -55,7 +54,6 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
             </div>
           )}
 
-          {/* Badges */}
           <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10">
             {product.featured && (
               <span className="bg-black text-white text-[10px] uppercase tracking-widest font-medium px-2 py-0.5 rounded shadow-xs">
@@ -75,14 +73,12 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
           </div>
         </Link>
 
-        {/* Info Section */}
         <div className="mt-3 flex flex-col">
           <div className="flex justify-between items-center gap-2">
             <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-500 truncate">
               {product.category || "Apparel"}
             </span>
 
-            {/* Quick Size Selectors */}
             {product.sizes && product.sizes.length > 1 && (
               <div className="flex items-center gap-1 shrink-0">
                 {product.sizes.map((size) => (
@@ -115,7 +111,6 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
             {product.name}
           </Link>
 
-          {/* Price */}
           <div className="mt-1 flex items-center gap-2">
             <span className="text-sm font-semibold text-neutral-900">
               ${Number(product.price).toFixed(2)}
@@ -129,7 +124,6 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         </div>
       </div>
 
-      {/* Prominent Add to Bag Action Button (Always Visible on Desktop & Mobile) */}
       <div className="mt-3 pt-1">
         {product.inStock ? (
           <button

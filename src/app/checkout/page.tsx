@@ -52,10 +52,8 @@ export default function CheckoutPage() {
     country: "Pakistan",
   });
 
-  // Default to Stripe as requested
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "stripe">("stripe");
 
-  // Saved profile data
   const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
 
   const [submitting, setSubmitting] = useState(false);
@@ -71,7 +69,6 @@ export default function CheckoutPage() {
   const freeShippingThreshold = 75;
   const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
 
-  // Check if returning from Stripe Checkout Session
   useEffect(() => {
     if (typeof window === "undefined") return;
     const urlParams = new URLSearchParams(window.location.search);
@@ -85,7 +82,6 @@ export default function CheckoutPage() {
     }
 
     if (sessionId) {
-      // Immediately wipe the session_id from the browser address bar
       window.history.replaceState({}, "", "/checkout");
       setVerifyingSession(true);
 
@@ -111,14 +107,12 @@ export default function CheckoutPage() {
     }
   }, [clearCart]);
 
-  // Always scroll window to top when order is placed or verifying
   useEffect(() => {
     if (orderComplete || verifyingSession) {
       window.scrollTo(0, 0);
     }
   }, [orderComplete, verifyingSession]);
 
-  // Auto-fill from user profile when logged in
   useEffect(() => {
     let isCancelled = false;
 
@@ -129,7 +123,6 @@ export default function CheckoutPage() {
         email: prev.email || user.email || "",
       }));
 
-      // Fetch saved profile addresses
       fetch("/api/user/profile")
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
@@ -199,7 +192,6 @@ export default function CheckoutPage() {
       return;
     }
 
-    // Validate delivery details
     if (
       !customer.fullName.trim() ||
       !customer.email.trim() ||
@@ -247,7 +239,6 @@ export default function CheckoutPage() {
       }
     }
 
-    // Cash on delivery direct order submission
     const res = await createOrder(payload);
 
     setSubmitting(false);
@@ -345,7 +336,6 @@ export default function CheckoutPage() {
   return (
     <div className="bg-neutral-50/40 min-h-screen py-10 sm:py-14">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Breadcrumb / Return Link */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-8 mb-8 border-b border-neutral-200/80 gap-4">
           <div>
             <Link
@@ -367,10 +357,8 @@ export default function CheckoutPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Main Checkout Form Column */}
           <div className="lg:col-span-7">
             <form id="checkout-form" name="checkoutForm" onSubmit={handleSubmit} className="space-y-6">
-              {/* Delivery Details Card */}
               <div className="bg-white border border-neutral-200/90 rounded-2xl p-6 sm:p-7 shadow-xs space-y-5">
                 <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
                   <div className="flex items-center gap-2.5">
@@ -388,7 +376,6 @@ export default function CheckoutPage() {
                   )}
                 </div>
 
-                {/* Quick Select from Saved Addresses */}
                 {savedAddresses.length > 0 && (
                   <div className="p-3.5 bg-neutral-50 border border-neutral-200 rounded-xl">
                     <label htmlFor="checkout-saved-address" className="block text-xs font-medium text-neutral-700 mb-1.5 cursor-pointer">
@@ -530,7 +517,6 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment Method Card */}
               <div className="bg-white border border-neutral-200/90 rounded-2xl p-6 sm:p-7 shadow-xs space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
                   <div className="flex items-center gap-2.5">
@@ -547,7 +533,6 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="space-y-3 pt-1">
-                  {/* Option 1: Stripe (Primary & Default) */}
                   <label
                     htmlFor="payment-method-stripe"
                     className={`block relative border rounded-xl p-4 cursor-pointer transition ${
@@ -589,7 +574,6 @@ export default function CheckoutPage() {
                     </div>
                   </label>
 
-                  {/* Option 2: Cash on Delivery (COD) */}
                   <label
                     htmlFor="payment-method-cod"
                     className={`block relative border rounded-xl p-4 cursor-pointer transition ${
@@ -632,7 +616,6 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Error Notice */}
               {error && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2">
                   <AlertCircle size={16} className="shrink-0" />
@@ -640,7 +623,6 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Action Button */}
               <button
                 id="checkout-submit-btn"
                 name="checkoutSubmit"
@@ -662,7 +644,6 @@ export default function CheckoutPage() {
             </form>
           </div>
 
-          {/* Sticky Order Review Sidebar */}
           <div className="lg:col-span-5">
             <div className="bg-white border border-neutral-200/90 rounded-2xl p-6 sm:p-7 shadow-xs space-y-6 sticky top-24">
               <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
@@ -677,7 +658,6 @@ export default function CheckoutPage() {
                 </Link>
               </div>
 
-              {/* Free shipping progress indicator */}
               <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 text-xs">
                 {subtotal >= freeShippingThreshold ? (
                   <div className="flex items-center gap-1.5 text-emerald-800 font-medium">
@@ -691,7 +671,6 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              {/* Items List */}
               <div className="space-y-3.5 max-h-72 overflow-y-auto pr-1">
                 {cart.map((item) => (
                   <div key={item.id} className="flex gap-3 text-xs items-center justify-between">
@@ -723,7 +702,6 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
-              {/* Totals */}
               <div className="border-t border-neutral-100 pt-4 space-y-2.5 text-xs text-neutral-600">
                 <div className="flex justify-between">
                   <span>Cart Subtotal</span>
@@ -744,7 +722,6 @@ export default function CheckoutPage() {
                 <span className="font-serif text-xl font-bold">${total.toFixed(2)}</span>
               </div>
 
-              {/* Guarantees */}
               <div className="border-t border-neutral-100 pt-4 space-y-2 text-[11px] text-neutral-500">
                 <div className="flex items-center gap-2">
                   <ShieldCheck size={14} className="text-neutral-700 shrink-0" />

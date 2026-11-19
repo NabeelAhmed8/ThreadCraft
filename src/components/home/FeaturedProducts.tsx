@@ -22,7 +22,6 @@ export default function FeaturedProducts({
   const [reloadTrigger, setReloadTrigger] = useState(0);
 
   useEffect(() => {
-    // If initialProducts was pre-rendered and no manual reload requested, skip extra client-side fetch
     if (initialProducts.length > 0 && reloadTrigger === 0) {
       return;
     }
@@ -69,7 +68,6 @@ export default function FeaturedProducts({
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-      {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 pb-4 border-b border-neutral-200">
         <div>
           <span className="text-[11px] font-mono tracking-widest uppercase text-neutral-500">
@@ -88,10 +86,8 @@ export default function FeaturedProducts({
         </Link>
       </div>
 
-      {/* Loading Skeleton */}
       {loading && <ProductGridSkeleton count={8} />}
 
-      {/* Error Alert */}
       {!loading && error && (
         <BackendStatusAlert
           error={error}
@@ -100,7 +96,6 @@ export default function FeaturedProducts({
         />
       )}
 
-      {/* Empty State when backend has 0 products */}
       {!loading && !error && products.length === 0 && (
         <BackendStatusAlert
           onRetry={handleRetry}
@@ -108,7 +103,6 @@ export default function FeaturedProducts({
         />
       )}
 
-      {/* Products Grid */}
       {!loading && !error && products.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
           {products.map((product, idx) => (

@@ -31,10 +31,6 @@ interface MobileNavDrawerProps {
   isClient: boolean;
 }
 
-/**
- * MobileNavDrawer Component
- * Single Responsibility: Presentational and interactive slide-over drawer for mobile navigation.
- */
 export function MobileNavDrawer({
   isOpen,
   onClose,
@@ -47,24 +43,20 @@ export function MobileNavDrawer({
   const { totalItems, openCart } = useCart();
   const { user } = useAuth();
 
-  // Freeze background page scroll when drawer is open
   useLockBodyScroll(isOpen);
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 md:hidden">
-      {/* Backdrop overlay */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Slide panel */}
       <div className="fixed inset-y-0 left-0 w-[85vw] max-w-sm bg-white h-full flex flex-col justify-between shadow-2xl z-10 overflow-y-auto animate-in slide-in-from-left duration-200">
         <div>
-          {/* Drawer Top Header */}
           <div className="p-5 border-b border-neutral-100 flex items-center justify-between">
             <Link
               href="/"
@@ -89,7 +81,6 @@ export function MobileNavDrawer({
             </button>
           </div>
 
-          {/* Mobile In-Drawer Search Input */}
           <div className="p-4 border-b border-neutral-100">
             <form
               id="mobile-search-form"
@@ -114,7 +105,6 @@ export function MobileNavDrawer({
             </form>
           </div>
 
-          {/* Main Categories Navigation */}
           <div className="p-4 space-y-1">
             <div className="text-[10px] uppercase font-mono tracking-widest text-neutral-400 px-3 py-1">
               Collections
@@ -131,9 +121,22 @@ export function MobileNavDrawer({
                 <ChevronRight size={14} className="text-neutral-400" />
               </Link>
             ))}
+
+            {isClient && user?.role === "admin" && (
+              <Link
+                href="/admin"
+                onClick={onClose}
+                className="flex items-center justify-between px-3 py-3 rounded-lg text-sm font-semibold text-black bg-neutral-100 hover:bg-neutral-200 transition"
+              >
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={16} className="text-emerald-600" />
+                  <span>Studio Console</span>
+                </div>
+                <ChevronRight size={14} className="text-neutral-500" />
+              </Link>
+            )}
           </div>
 
-          {/* Quick Customer Links */}
           <div className="px-4 py-2 border-t border-neutral-100 space-y-1">
             <div className="text-[10px] uppercase font-mono tracking-widest text-neutral-400 px-3 py-1">
               Customer Care
@@ -184,7 +187,6 @@ export function MobileNavDrawer({
           </div>
         </div>
 
-        {/* Drawer Bottom: User Account Card */}
         <div className="p-4 border-t border-neutral-200 bg-neutral-50/70">
           {isClient && user ? (
             <div className="space-y-3">
@@ -205,11 +207,21 @@ export function MobileNavDrawer({
                 </div>
               </div>
 
-              <div className="pt-1">
+              <div className="pt-1 space-y-2">
+                {user.role === "admin" && (
+                  <Link
+                    href="/admin"
+                    onClick={onClose}
+                    className="flex items-center justify-center gap-1.5 w-full text-center py-2.5 bg-black text-white text-xs font-mono font-medium uppercase tracking-wider rounded-lg hover:bg-neutral-800 transition"
+                  >
+                    <ShieldCheck size={14} className="text-emerald-400" />
+                    <span>Studio Console</span>
+                  </Link>
+                )}
                 <Link
                   href="/profile"
                   onClick={onClose}
-                  className="block w-full text-center py-2.5 bg-neutral-900 text-white text-xs font-medium uppercase tracking-wider rounded-lg hover:bg-neutral-800 transition"
+                  className="block w-full text-center py-2.5 bg-neutral-100 text-neutral-900 text-xs font-medium uppercase tracking-wider rounded-lg hover:bg-neutral-200 transition"
                 >
                   My Profile
                 </Link>
@@ -237,7 +249,6 @@ export function MobileNavDrawer({
             </div>
           )}
 
-          {/* Legal & Shipping note */}
           <div className="pt-3 text-[10px] text-neutral-400 text-center tracking-wider">
             &copy; 2026 THREADCRAFT STUDIO
           </div>

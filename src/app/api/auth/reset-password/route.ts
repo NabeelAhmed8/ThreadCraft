@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate code match
     if (!user.verificationCode || user.verificationCode !== cleanCode) {
       return NextResponse.json(
         { error: "Invalid verification code. Please check and try again." },
@@ -43,7 +42,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate code expiration
     if (
       !user.verificationCodeExpires ||
       new Date(user.verificationCodeExpires).getTime() < Date.now()
@@ -54,7 +52,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 

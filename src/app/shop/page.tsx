@@ -92,7 +92,6 @@ function ShopContent() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Page Title & Breadcrumbs */}
       <div className="border-b border-neutral-200 pb-8">
         <span className="text-[11px] font-mono tracking-widest uppercase text-neutral-500">
           ThreadCraft Studio &bull; Catalog
@@ -107,9 +106,7 @@ function ShopContent() {
         )}
       </div>
 
-      {/* Filter and Sort Toolbar */}
       <div className="py-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-neutral-100">
-        {/* Category Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
           {CATEGORIES.map((cat) => (
             <button
@@ -126,7 +123,6 @@ function ShopContent() {
           ))}
         </div>
 
-        {/* Sort Options */}
         <div className="flex items-center space-x-3 self-end md:self-auto">
           <SlidersHorizontal size={15} className="text-neutral-500" />
           <label htmlFor="shop-sort-by" className="text-xs text-neutral-500 cursor-pointer">
@@ -150,15 +146,12 @@ function ShopContent() {
         </div>
       </div>
 
-      {/* Results Count */}
       <div className="py-4 text-xs text-neutral-500">
         {!loading && !error && `Showing ${products.length} of ${total} items`}
       </div>
 
-      {/* Loading Skeletons */}
       {loading && <ProductGridSkeleton count={8} />}
 
-      {/* Disconnected or Error Alert */}
       {!loading && error && (
         <BackendStatusAlert
           error={error}
@@ -167,7 +160,6 @@ function ShopContent() {
         />
       )}
 
-      {/* Empty State when backend has 0 matching products */}
       {!loading && !error && products.length === 0 && (
         <BackendStatusAlert
           onRetry={handleRetry}
@@ -175,7 +167,6 @@ function ShopContent() {
         />
       )}
 
-      {/* Products Grid */}
       {!loading && !error && products.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
           {products.map((product, idx) => (

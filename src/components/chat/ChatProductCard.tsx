@@ -11,10 +11,6 @@ interface ChatProductCardProps {
   onSelect?: () => void;
 }
 
-/**
- * ChatProductCard Component
- * Single Responsibility: Display an interactive product card inside chat messages.
- */
 export function ChatProductCard({ product, onSelect }: ChatProductCardProps) {
   return (
     <div className="flex items-center gap-3 p-2 bg-neutral-900/50 hover:bg-neutral-800/80 border border-neutral-700/60 rounded-xl transition duration-150 group">

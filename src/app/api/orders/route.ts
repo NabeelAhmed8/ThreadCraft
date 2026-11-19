@@ -24,7 +24,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Server-side Catalog Price & Stock Verification
     const productIds = body.items.map((i: { productId?: string; id?: string }) => i.productId || i.id).filter(Boolean);
     const dbProducts = await Product.find({ _id: { $in: productIds } });
     const productMap = new Map(dbProducts.map((p) => [p._id.toString(), p]));
@@ -80,26 +79,22 @@ export async function POST(request: NextRequest) {
       notes: body.notes || "",
     });
 
-    // Decrement inventory stock atomically
     for (const item of verifiedItems) {
       await Product.findByIdAndUpdate(item.productId, {
         $inc: { stockCount: -item.quantity },
       });
     }
 
-    // Automatically sync Address & Payment method to User Profile in MongoDB
     if (body.customer?.email) {
       try {
         const normalizedEmail = body.customer.email.toLowerCase().trim();
         const user = await User.findOne({ email: normalizedEmail });
 
         if (user) {
-          // 1. Sync phone if not yet set
           if (!user.phone && body.customer.phone) {
             user.phone = body.customer.phone.trim();
           }
 
-          // 2. Automatically save checkout shipping address to user's profile
           const incomingStreet = (body.customer.address || "").toLowerCase().trim();
           const incomingCity = (body.customer.city || "").toLowerCase().trim();
 
@@ -125,7 +120,6 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          // 3. Automatically save checkout payment card to user's profile if card used
           if (
             body.paymentMethod === "card" &&
             body.cardDetails?.cardNumber
@@ -164,7 +158,6 @@ export async function POST(request: NextRequest) {
           await user.save();
         }
       } catch (syncErr) {
-        // Non-blocking sync error
         console.error("Profile sync notice during checkout:", syncErr);
       }
     }
@@ -204,7 +197,6 @@ export async function GET(request: NextRequest) {
 
     await connectToDatabase();
 
-    // Admin can query any customer email or view all orders; customers can only view their own orders
     let query: Record<string, unknown> = {};
     if (decoded.role === "admin") {
       const email = request.nextUrl.searchParams.get("email");

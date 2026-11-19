@@ -16,7 +16,7 @@ export interface Product {
 }
 
 export interface CartItem {
-  id: string; // unique item key: productId + size + color
+  id: string;
   productId: string | number;
   name: string;
   price: number;

@@ -39,7 +39,6 @@ const SubscriberSchema: Schema = new Schema(
   }
 );
 
-// Prevent model overwrite in development
 const Subscriber: Model<ISubscriber> =
   mongoose.models.Subscriber ||
   mongoose.model<ISubscriber>("Subscriber", SubscriberSchema);

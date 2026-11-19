@@ -50,7 +50,6 @@ export default function CategoriesShowcase() {
               className="group relative bg-white border border-neutral-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col"
             >
               <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-200">
-                {/* Visual backdrop */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={cat.image}

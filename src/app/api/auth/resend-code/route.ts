@@ -26,15 +26,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate fresh 6-digit code
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const verificationCodeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+    const verificationCodeExpires = new Date(Date.now() + 15 * 60 * 1000);
 
     user.verificationCode = verificationCode;
     user.verificationCodeExpires = verificationCodeExpires;
     await user.save();
 
-    // Send email
     await sendVerificationEmail({
       to: user.email,
       name: user.name,

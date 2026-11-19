@@ -48,10 +48,6 @@ interface ChatQuickChipsProps {
   disabled?: boolean;
 }
 
-/**
- * ChatQuickChips Component
- * Single Responsibility: Display clickable prompt suggestion pills.
- */
 export function ChatQuickChips({ onSelectChip, disabled }: ChatQuickChipsProps) {
   return (
     <div className="p-3 border-t border-neutral-800/80 bg-neutral-950/60 overflow-x-auto no-scrollbar">

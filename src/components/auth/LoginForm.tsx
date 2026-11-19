@@ -13,10 +13,6 @@ interface LoginFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
-/**
- * LoginForm Component
- * Single Responsibility: Presentational form inputs & controls for user login.
- */
 export function LoginForm({
   email,
   setEmail,
@@ -29,7 +25,6 @@ export function LoginForm({
 
   return (
     <form id="login-form" name="loginForm" onSubmit={onSubmit} className="space-y-3.5">
-      {/* Email input */}
       <div>
         <label
           htmlFor="login-email"
@@ -53,7 +48,6 @@ export function LoginForm({
         </div>
       </div>
 
-      {/* Password input */}
       <div>
         <div className="flex justify-between items-center mb-1">
           <label
@@ -93,7 +87,6 @@ export function LoginForm({
         </div>
       </div>
 
-      {/* Submit button */}
       <button
         id="login-submit-btn"
         name="loginSubmit"

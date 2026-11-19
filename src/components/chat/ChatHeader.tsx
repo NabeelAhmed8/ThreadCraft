@@ -8,10 +8,6 @@ interface ChatHeaderProps {
   onClear: () => void;
 }
 
-/**
- * ChatHeader Component
- * Single Responsibility: Header controls & online concierge status for the chat window.
- */
 export function ChatHeader({ onClose, onClear }: ChatHeaderProps) {
   return (
     <div className="flex items-center justify-between px-4 py-3 bg-neutral-950 border-b border-neutral-800 text-white rounded-t-2xl">

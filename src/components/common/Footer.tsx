@@ -47,7 +47,6 @@ export default function Footer() {
     <footer className="bg-neutral-950 text-neutral-300 border-t border-neutral-900 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          {/* Brand Manifesto */}
           <div className="md:col-span-1 space-y-4">
             <span className="font-serif text-2xl font-bold tracking-tight text-white block">
               THREADCRAFT
@@ -58,7 +57,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Shop Links */}
           <div className="space-y-3">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-white">
               Collection
@@ -87,7 +85,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Support / Help */}
           <div className="space-y-3">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-white">
               Care &amp; Client Service
@@ -110,7 +107,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter / Join Club */}
           <div className="space-y-3">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-white">
               Stay in the Circle

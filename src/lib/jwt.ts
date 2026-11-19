@@ -20,18 +20,12 @@ export interface JWTPayload {
   role?: string;
 }
 
-/**
- * Sign a JWT token for an authenticated user
- */
 export function signToken(payload: JWTPayload): string {
   return jwt.sign(payload, getJwtSecret(), {
     expiresIn: JWT_EXPIRES_IN,
   });
 }
 
-/**
- * Verify and decode a JWT token
- */
 export function verifyToken(token: string): JWTPayload | null {
   try {
     return jwt.verify(token, getJwtSecret()) as JWTPayload;
@@ -40,9 +34,6 @@ export function verifyToken(token: string): JWTPayload | null {
   }
 }
 
-/**
- * Extract token from HTTP-only cookie or Authorization Bearer header
- */
 export function extractTokenFromRequest(request: NextRequest): string | null {
   const cookieToken = request.cookies.get("token")?.value;
   if (cookieToken) return cookieToken;
@@ -55,9 +46,6 @@ export function extractTokenFromRequest(request: NextRequest): string | null {
   return null;
 }
 
-/**
- * Retrieve authenticated user document from request token
- */
 export async function getAuthUser(request: NextRequest): Promise<IUser | null> {
   const token = extractTokenFromRequest(request);
   if (!token) return null;

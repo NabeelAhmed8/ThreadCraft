@@ -82,24 +82,20 @@ export default function ProfilePage() {
     message: string;
   } | null>(null);
 
-  // Profile data states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [createdAt, setCreatedAt] = useState("");
 
-  // Addresses & Payments
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [payments, setPayments] = useState<PaymentMethod[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
 
-  // Password change state
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Modal / Form toggle states
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [newAddress, setNewAddress] = useState({
     label: "Home",
@@ -121,7 +117,6 @@ export default function ProfilePage() {
     isDefault: false,
   });
 
-  // Load profile and orders
   useEffect(() => {
     let isCancelled = false;
 
@@ -134,7 +129,6 @@ export default function ProfilePage() {
       try {
         setLoading(true);
 
-        // Fetch User Profile with addresses & payments
         const profileRes = await fetch("/api/user/profile");
         if (profileRes.ok) {
           const profileData = await profileRes.json();
@@ -149,7 +143,6 @@ export default function ProfilePage() {
           }
         }
 
-        // Fetch User Orders
         const ordersRes = await fetch(
           `/api/orders?email=${encodeURIComponent(user.email)}`
         );
@@ -175,7 +168,6 @@ export default function ProfilePage() {
     };
   }, [user]);
 
-  // Update Personal Info
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -202,7 +194,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Change Password
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setFeedback(null);
@@ -249,7 +240,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Add Address
   const handleAddAddress = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -289,7 +279,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Delete Address
   const handleDeleteAddress = async (addressId: string) => {
     if (!confirm("Are you sure you want to remove this address?")) return;
     setFeedback(null);
@@ -314,7 +303,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Add Payment
   const handleAddPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -352,7 +340,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Delete Payment
   const handleDeletePayment = async (paymentId: string) => {
     if (!confirm("Are you sure you want to remove this payment method?")) return;
     setFeedback(null);
@@ -377,7 +364,6 @@ export default function ProfilePage() {
     }
   };
 
-  // If user is not authenticated
   if (!isAuthenticated && !loading) {
     return (
       <div className="min-h-[75vh] flex items-center justify-center px-4 bg-neutral-50/50">
@@ -416,7 +402,6 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-neutral-50/50 py-6 sm:py-10 md:py-16">
       <div className="max-w-6xl mx-auto px-3.5 sm:px-6 lg:px-8">
-        {/* Page Title & User Summary */}
         <div className="bg-white border border-neutral-200 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
           <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 w-full sm:w-auto">
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-neutral-900 text-white rounded-full flex items-center justify-center font-serif text-lg sm:text-2xl font-bold shrink-0">
@@ -452,10 +437,19 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="w-full sm:w-auto flex justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-neutral-100">
+          <div className="w-full sm:w-auto flex flex-wrap items-center justify-end gap-2.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-neutral-100">
+            {user?.role === "admin" && (
+              <Link
+                href="/admin"
+                className="flex items-center justify-center gap-1.5 text-xs text-white bg-black hover:bg-neutral-800 px-4 py-2 rounded-lg font-medium transition shadow-xs"
+              >
+                <ShieldCheck size={14} className="text-emerald-400" />
+                <span>Studio Console</span>
+              </Link>
+            )}
             <button
               onClick={logout}
-              className="w-full sm:w-auto flex items-center justify-center gap-1.5 text-xs text-red-600 hover:text-red-700 border border-red-200 hover:bg-red-50 px-4 py-2 rounded-lg font-medium transition"
+              className="flex items-center justify-center gap-1.5 text-xs text-red-600 hover:text-red-700 border border-red-200 hover:bg-red-50 px-4 py-2 rounded-lg font-medium transition"
             >
               <LogOut size={13} />
               <span>Sign Out</span>
@@ -463,7 +457,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Feedback Alert */}
         {feedback && (
           <div
             className={`mb-6 p-3.5 sm:p-4 rounded-xl flex items-center gap-2.5 text-xs ${
@@ -481,9 +474,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Main Content Layout: Tabs + Content */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
-          {/* Navigation Tabs Sidebar / Mobile Pill Bar */}
           <div className="lg:col-span-1">
             <nav className="bg-white border border-neutral-200 rounded-2xl p-1.5 sm:p-2 shadow-xs sticky top-20 lg:top-24 z-10 flex lg:flex-col gap-1 sm:gap-1.5 overflow-x-auto lg:overflow-visible no-scrollbar">
               <button
@@ -578,9 +569,7 @@ export default function ProfilePage() {
             </nav>
           </div>
 
-          {/* Tab Content Panel */}
           <div className="lg:col-span-3">
-            {/* 1. PERSONAL PROFILE TAB */}
             {activeTab === "profile" && (
               <div className="bg-white border border-neutral-200 rounded-2xl p-5 sm:p-6 md:p-8 shadow-xs space-y-6">
                 <div>
@@ -670,7 +659,6 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* 2. ADDRESSES TAB */}
             {activeTab === "addresses" && (
               <div className="space-y-6">
                 <div className="bg-white border border-neutral-200 rounded-2xl p-5 sm:p-6 md:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -691,7 +679,6 @@ export default function ProfilePage() {
                   </button>
                 </div>
 
-                {/* Add New Address Form */}
                 {showAddressForm && (
                   <div className="bg-white border border-neutral-200 rounded-2xl p-5 sm:p-6 md:p-8 shadow-xs">
                     <h3 className="font-serif text-base font-bold text-neutral-900 mb-4">
@@ -904,7 +891,6 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-                {/* Addresses List */}
                 {addresses.length === 0 ? (
                   <div className="bg-white border border-neutral-200 rounded-2xl p-8 sm:p-12 text-center shadow-xs">
                     <MapPin
@@ -975,7 +961,6 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* 3. PAYMENT METHODS TAB */}
             {activeTab === "payments" && (
               <div className="space-y-6">
                 <div className="bg-white border border-neutral-200 rounded-2xl p-5 sm:p-6 md:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -996,7 +981,6 @@ export default function ProfilePage() {
                   </button>
                 </div>
 
-                {/* Add Payment Form */}
                 {showPaymentForm && (
                   <div className="bg-white border border-neutral-200 rounded-2xl p-5 sm:p-6 md:p-8 shadow-xs">
                     <h3 className="font-serif text-base font-bold text-neutral-900 mb-4">
@@ -1117,7 +1101,6 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-                {/* Cards List */}
                 {payments.length === 0 ? (
                   <div className="bg-white border border-neutral-200 rounded-2xl p-8 sm:p-12 text-center shadow-xs">
                     <CreditCard
@@ -1139,7 +1122,6 @@ export default function ProfilePage() {
                         key={card._id || card.id}
                         className="bg-linear-to-tr from-neutral-950 via-neutral-900 to-neutral-800 text-white p-5 sm:p-6 rounded-2xl shadow-md flex flex-col justify-between min-h-47.5 relative overflow-hidden"
                       >
-                        {/* Decorative card circle */}
                         <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full pointer-events-none" />
 
                         <div className="flex items-center justify-between">
@@ -1189,7 +1171,6 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* 4. ORDERS HISTORY TAB */}
             {activeTab === "orders" && (
               <div className="space-y-6">
                 <div className="bg-white border border-neutral-200 rounded-2xl p-5 sm:p-6 md:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1237,7 +1218,6 @@ export default function ProfilePage() {
                         key={order._id || order.id || order.orderNumber}
                         className="bg-white border border-neutral-200 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4"
                       >
-                        {/* Order Header */}
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 sm:pb-4 border-b border-neutral-100">
                           <div>
                             <span className="font-mono text-xs sm:text-sm font-bold text-neutral-950">
@@ -1267,7 +1247,6 @@ export default function ProfilePage() {
                           </div>
                         </div>
 
-                        {/* Order Items List */}
                         <div className="divide-y divide-neutral-100">
                           {order.items.map((item, idx) => (
                             <div
@@ -1313,7 +1292,6 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* 5. SECURITY & PASSWORD TAB */}
             {activeTab === "security" && (
               <div className="bg-white border border-neutral-200 rounded-2xl p-5 sm:p-6 md:p-8 shadow-xs space-y-6">
                 <div>
@@ -1326,7 +1304,6 @@ export default function ProfilePage() {
                   </p>
                 </div>
 
-                {/* Email Verification Banner */}
                 <div className="p-4 sm:p-5 rounded-xl border border-neutral-200 bg-neutral-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <ShieldCheck
@@ -1356,7 +1333,6 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                {/* Change Password Form */}
                 <form id="change-password-form" name="changePasswordForm" onSubmit={handleChangePassword} className="space-y-4 pt-2">
                   <h3 className="font-serif text-sm font-semibold text-neutral-900 flex items-center gap-2">
                     <Lock size={15} /> Change Wardrobe Password

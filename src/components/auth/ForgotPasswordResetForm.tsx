@@ -19,10 +19,6 @@ interface ForgotPasswordResetFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
-/**
- * ForgotPasswordResetForm
- * Single Responsibility: Presentational input controls for OTP verification and setting a new password.
- */
 export function ForgotPasswordResetForm({
   email,
   code,
@@ -42,7 +38,6 @@ export function ForgotPasswordResetForm({
 
   return (
     <form id="forgot-password-reset-form" onSubmit={onSubmit} className="space-y-4">
-      {/* Target account info */}
       <div className="flex items-center justify-between bg-neutral-50 px-3.5 py-2.5 rounded-lg border border-neutral-200">
         <div className="text-xs text-neutral-600 truncate mr-2">
           Code sent to: <span className="font-semibold text-neutral-900">{email}</span>
@@ -56,7 +51,6 @@ export function ForgotPasswordResetForm({
         </button>
       </div>
 
-      {/* 6-Digit Code */}
       <div>
         <div className="flex justify-between items-center mb-1.5">
           <label
@@ -89,7 +83,6 @@ export function ForgotPasswordResetForm({
         />
       </div>
 
-      {/* New Password */}
       <div>
         <label
           htmlFor="new-password-input"
@@ -122,7 +115,6 @@ export function ForgotPasswordResetForm({
         </div>
       </div>
 
-      {/* Confirm Password */}
       <div>
         <label
           htmlFor="confirm-password-input"
@@ -147,7 +139,6 @@ export function ForgotPasswordResetForm({
         </div>
       </div>
 
-      {/* Submit Button */}
       <button
         id="reset-submit-btn"
         type="submit"

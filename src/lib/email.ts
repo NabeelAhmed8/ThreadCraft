@@ -10,9 +10,6 @@ interface SendVerificationEmailOptions {
 type EmailTransporter = ReturnType<typeof nodemailer.createTransport>;
 let cachedTransporter: EmailTransporter | null | undefined = undefined;
 
-/**
- * Creates or retrieves a pooled Nodemailer transport instance
- */
 function getEmailTransporter(): EmailTransporter | null {
   if (cachedTransporter !== undefined) {
     return cachedTransporter;
@@ -44,9 +41,6 @@ function getEmailTransporter(): EmailTransporter | null {
   return cachedTransporter;
 }
 
-/**
- * Sends a modern, minimalist HTML verification email with OTP and button
- */
 export async function sendVerificationEmail({
   to,
   name,
@@ -217,7 +211,6 @@ ${verifyUrl}
 This code expires in 15 minutes.
   `;
 
-  // Always log to server terminal for instant inspection/dev testing
   console.log("\n========================================================");
   console.log(`[ThreadCraft Nodemailer] Verification code for: ${to}`);
   console.log(`Code: ${code}`);
@@ -240,11 +233,9 @@ This code expires in 15 minutes.
       return { success: true };
     } catch (error) {
       console.error("[Nodemailer Error] Could not send email via SMTP:", error);
-      // Fallback succeeded via console log
       return { success: false };
     }
   } else {
-    // If SMTP is not yet configured, notify console
     console.log(
       "[Nodemailer Info] SMTP credentials not set in .env.local. The verification code has been printed above."
     );
@@ -252,9 +243,6 @@ This code expires in 15 minutes.
   }
 }
 
-/**
- * Sends a welcome email to a new newsletter subscriber
- */
 export async function sendNewsletterWelcomeEmail(
   to: string
 ): Promise<{ success: boolean }> {

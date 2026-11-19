@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/jwt";
 import bcrypt from "bcryptjs";
 
-// GET: Retrieve user profile
 export async function GET(request: NextRequest) {
   try {
     const user = await getAuthUser(request);
@@ -34,7 +33,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PUT: Update personal details or change password
 export async function PUT(request: NextRequest) {
   try {
     const user = await getAuthUser(request);
@@ -48,17 +46,14 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { name, phone, currentPassword, newPassword } = body;
 
-    // Update name
     if (name && name.trim()) {
       user.name = name.trim();
     }
 
-    // Update phone
     if (phone !== undefined) {
       user.phone = phone.trim();
     }
 
-    // Password change request
     if (newPassword) {
       if (!currentPassword) {
         return NextResponse.json(

@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/lib/email";
+import { signToken } from "@/lib/jwt";
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,7 +29,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
@@ -37,32 +37,68 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate cryptographically secure 6-digit verification code
-    const verificationCode = crypto.randomInt(100000, 1000000).toString();
-    const verificationCodeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+    if (!user.isVerified) {
+      const verificationCode = crypto.randomInt(100000, 1000000).toString();
+      const verificationCodeExpires = new Date(Date.now() + 15 * 60 * 1000);
 
-    user.verificationCode = verificationCode;
-    user.verificationCodeExpires = verificationCodeExpires;
-    await user.save();
+      user.verificationCode = verificationCode;
+      user.verificationCodeExpires = verificationCodeExpires;
+      await user.save();
 
-    // Send verification email via Nodemailer
-    await sendVerificationEmail({
-      to: user.email,
+      await sendVerificationEmail({
+        to: user.email,
+        name: user.name,
+        code: verificationCode,
+        type: "signup",
+      });
+
+      return NextResponse.json(
+        {
+          success: true,
+          requireVerification: true,
+          message: "Please verify your email before logging in. A code has been sent.",
+          email: user.email,
+          devVerificationCode: process.env.SMTP_USER ? undefined : verificationCode,
+        },
+        { status: 200 }
+      );
+    }
+
+    const userData = {
+      id: user._id.toString(),
       name: user.name,
-      code: verificationCode,
-      type: "login",
+      email: user.email,
+      role: user.role,
+    };
+
+    const token = signToken({
+      userId: userData.id,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
     });
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         success: true,
-        requireVerification: true,
-        message: "Verification code sent to your email.",
-        email: user.email,
-        devVerificationCode: process.env.SMTP_USER ? undefined : verificationCode,
+        message: "Logged in successfully.",
+        token,
+        user: userData,
       },
       { status: 200 }
     );
+
+    response.cookies.set({
+      name: "token",
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7,
+      path: "/",
+    });
+
+    return response;
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : "Error logging in";

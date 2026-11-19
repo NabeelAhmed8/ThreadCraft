@@ -9,10 +9,6 @@ interface ChatFloatingButtonProps {
   unreadCount?: number;
 }
 
-/**
- * ChatFloatingButton Component
- * Single Responsibility: Fixed floating action button to toggle chat drawer with modern glassmorphism.
- */
 export function ChatFloatingButton({
   isOpen,
   onClick,
@@ -22,7 +18,6 @@ export function ChatFloatingButton({
 
   return (
     <div className="fixed bottom-6 right-6 z-40 group">
-      {/* Tooltip hint on hover */}
       <div className="hidden sm:block absolute right-full mr-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
         <div className="bg-neutral-950 text-white text-[11px] font-medium px-3 py-1.5 rounded-lg shadow-xl whitespace-nowrap border border-neutral-800">
           Chat with Stylist

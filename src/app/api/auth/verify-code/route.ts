@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if code matches
     if (!user.verificationCode || user.verificationCode !== cleanCode) {
       return NextResponse.json(
         { error: "Invalid verification code. Please check and try again." },
@@ -36,7 +35,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check expiration
     if (
       !user.verificationCodeExpires ||
       new Date(user.verificationCodeExpires).getTime() < Date.now()
@@ -47,7 +45,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Mark as verified & clear code
     user.isVerified = true;
     user.verificationCode = undefined;
     user.verificationCodeExpires = undefined;
@@ -60,7 +57,6 @@ export async function POST(request: NextRequest) {
       role: user.role,
     };
 
-    // Generate JWT token
     const token = signToken({
       userId: userData.id,
       name: userData.name,
@@ -78,14 +74,13 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
 
-    // Set secure HTTP-only cookie
     response.cookies.set({
       name: "token",
       value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
 

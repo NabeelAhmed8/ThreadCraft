@@ -27,7 +27,6 @@ export async function POST(request: NextRequest) {
     const cleanIdentifier = identifier.trim();
     const normalizedEmail = cleanIdentifier.toLowerCase();
 
-    // Search user by email or phone
     const user = await User.findOne({
       $or: [
         { email: normalizedEmail },
@@ -42,7 +41,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate cryptographically secure 6-digit OTP code with 15-minute expiration
     const verificationCode = crypto.randomInt(100000, 1000000).toString();
     const verificationCodeExpires = new Date(Date.now() + 15 * 60 * 1000);
 
@@ -50,7 +48,6 @@ export async function POST(request: NextRequest) {
     user.verificationCodeExpires = verificationCodeExpires;
     await user.save();
 
-    // Send code via email
     await sendVerificationEmail({
       to: user.email,
       name: user.name,

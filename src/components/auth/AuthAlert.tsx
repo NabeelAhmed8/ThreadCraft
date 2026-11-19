@@ -6,10 +6,6 @@ interface AuthAlertProps {
   message: string | null;
 }
 
-/**
- * AuthAlert Component
- * Single Responsibility: Display error and success alert notifications.
- */
 export function AuthAlert({ type, message }: AuthAlertProps) {
   if (!message) return null;
 

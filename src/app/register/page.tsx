@@ -70,7 +70,6 @@ function RegisterCard() {
 export default function RegisterPage() {
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 sm:p-6 bg-neutral-50/50">
-      {/* Bottom Left Corner: Back to Home Button */}
       <Link
         href="/"
         className="fixed bottom-5 left-5 z-20 flex items-center gap-2 px-3.5 py-2 text-xs font-medium text-neutral-600 hover:text-neutral-950 bg-white/90 hover:bg-white backdrop-blur-md border border-neutral-200/90 rounded-full shadow-xs transition duration-150 group"

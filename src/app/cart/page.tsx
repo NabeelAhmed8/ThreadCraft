@@ -58,14 +58,12 @@ export default function CartPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Items List */}
         <div className="lg:col-span-8 space-y-6">
           {cart.map((item) => (
             <div
               key={item.id}
               className="flex gap-6 pb-6 border-b border-neutral-200 last:border-b-0 items-start"
             >
-              {/* Product Thumbnail */}
               <div className="relative w-28 h-36 bg-neutral-100 rounded-lg overflow-hidden shrink-0">
                 {item.image ? (
                   <Image
@@ -82,7 +80,6 @@ export default function CartPage() {
                 )}
               </div>
 
-              {/* Product Details */}
               <div className="flex-1 flex flex-col justify-between self-stretch">
                 <div>
                   <div className="flex justify-between items-start">
@@ -110,7 +107,6 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* Quantity and Subtotal */}
                 <div className="flex justify-between items-center mt-6">
                   <div className="flex items-center border border-neutral-300 rounded">
                     <button
@@ -141,7 +137,6 @@ export default function CartPage() {
           ))}
         </div>
 
-        {/* Order Summary Sidebar */}
         <div className="lg:col-span-4">
           <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-6 space-y-5 sticky top-24">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-900 border-b border-neutral-200 pb-3">

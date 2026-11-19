@@ -8,6 +8,7 @@ import {
   Menu,
   Search,
   User as UserIcon,
+  ShieldCheck,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -31,7 +32,6 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isClient, setIsClient] = useState(false);
 
-  // Hydration-safe client activation
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsClient(true);
@@ -39,13 +39,11 @@ export default function Navbar() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Close mobile drawer and search on route change
   useEffect(() => {
     setMobileMenuOpen(false);
     setSearchOpen(false);
   }, [pathname]);
 
-  // Close on Escape key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -68,7 +66,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Announcement Bar */}
       <aside
         aria-label="Announcement"
         className="bg-neutral-950 text-neutral-300 text-[11px] tracking-widest uppercase py-2 px-4 text-center border-b border-neutral-900 flex items-center justify-center gap-2"
@@ -77,11 +74,9 @@ export default function Navbar() {
         <span className="hidden sm:inline">&bull; Consciously Made Essentials</span>
       </aside>
 
-      {/* Main Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200/70 transition-colors">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Left: Mobile Hamburger Button */}
             <div className="flex items-center md:hidden">
               <button
                 type="button"
@@ -93,7 +88,6 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Brand Logo */}
             <div className="flex-1 md:flex-initial flex justify-center md:justify-start">
               <Link href="/" className="group flex flex-col text-center md:text-left">
                 <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 group-hover:opacity-85 transition">
@@ -105,7 +99,6 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Desktop Navigation Links */}
             <nav className="hidden md:flex items-center space-x-8">
               {NAV_LINKS.map((link) => (
                 <Link
@@ -119,9 +112,7 @@ export default function Navbar() {
               ))}
             </nav>
 
-            {/* Right Action Icons */}
             <div className="flex items-center space-x-1 sm:space-x-3">
-              {/* Search Toggle */}
               <button
                 type="button"
                 onClick={() => setSearchOpen(!searchOpen)}
@@ -132,7 +123,25 @@ export default function Navbar() {
                 <Search size={19} />
               </button>
 
-              {/* User Account Link (Desktop Only — mobile access is via hamburger drawer) */}
+              {isClient && user?.role === "admin" && (
+                <Link
+                  href="/admin"
+                  className="group relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium tracking-wide text-neutral-900 bg-neutral-100/80 hover:bg-neutral-950 hover:text-white border border-neutral-200/90 hover:border-neutral-950 transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 overflow-hidden"
+                  title="Studio Operations Console"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  <span className="font-semibold uppercase tracking-wider text-[11px]">
+                    Studio Console
+                  </span>
+                  <span className="text-neutral-400 group-hover:text-neutral-200 group-hover:translate-x-0.5 transition-transform duration-300">
+                    &rarr;
+                  </span>
+                </Link>
+              )}
+
               {isClient && user ? (
                 <Link
                   href="/profile"
@@ -158,7 +167,6 @@ export default function Navbar() {
                 </Link>
               )}
 
-              {/* Shopping Bag Button */}
               <button
                 type="button"
                 onClick={openCart}
@@ -176,7 +184,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Search Dropdown Input Bar */}
           {searchOpen && (
             <div className="py-3 px-1 border-t border-neutral-100 animate-in fade-in slide-in-from-top-2 duration-150">
               <form
@@ -213,7 +220,6 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer */}
       <MobileNavDrawer
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}

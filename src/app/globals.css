@@ -21,14 +21,12 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* Background scroll freeze when drawers, modals, or popups are open */
 body.no-scroll {
   overflow: hidden !important;
   touch-action: none;
   -webkit-overflow-scrolling: auto;
 }
 
-/* Hide scrollbar for mobile carousels and tabs */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -37,7 +35,6 @@ body.no-scroll {
   scrollbar-width: none;
 }
 
-/* Global Dynamic & Responsive Buttons */
 button,
 [role="button"],
 input[type="button"],

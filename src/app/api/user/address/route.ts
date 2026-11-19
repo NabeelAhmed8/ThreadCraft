@@ -3,7 +3,6 @@ import { IAddress } from "@/models/User";
 import { getAuthUser } from "@/lib/jwt";
 import mongoose from "mongoose";
 
-// POST: Add new address or update existing
 export async function POST(request: NextRequest) {
   try {
     const user = await getAuthUser(request);
@@ -35,7 +34,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // If marked default, unset default on other addresses
     if (isDefault) {
       user.addresses.forEach((addr: IAddress) => {
         addr.isDefault = false;
@@ -43,7 +41,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (addressId) {
-      // Update existing address
       const existing = (user.addresses as mongoose.Types.DocumentArray<IAddress & mongoose.Document>).id(addressId);
       if (existing) {
         existing.label = label || "Home";
@@ -57,7 +54,6 @@ export async function POST(request: NextRequest) {
         existing.isDefault = !!isDefault;
       }
     } else {
-      // Add new address
       const isFirst = user.addresses.length === 0;
       user.addresses.push({
         label: label || "Home",
@@ -86,7 +82,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE: Remove address by addressId
 export async function DELETE(request: NextRequest) {
   try {
     const user = await getAuthUser(request);

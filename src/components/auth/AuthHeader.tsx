@@ -7,10 +7,6 @@ interface AuthHeaderProps {
   badge?: string;
 }
 
-/**
- * AuthHeader Component
- * Single Responsibility: Display branded title, subtitle, and badge in auth cards.
- */
 export function AuthHeader({
   title,
   subtitle,

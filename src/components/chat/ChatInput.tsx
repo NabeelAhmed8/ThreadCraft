@@ -8,10 +8,6 @@ interface ChatInputProps {
   loading: boolean;
 }
 
-/**
- * ChatInput Component
- * Single Responsibility: Presentational message input field and send triggers.
- */
 export function ChatInput({ onSendMessage, loading }: ChatInputProps) {
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);

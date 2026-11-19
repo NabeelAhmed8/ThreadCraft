@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Product } from "@/models/Product";
-import { extractTokenFromRequest, verifyToken } from "@/lib/jwt";
 import { clearProductsCache } from "@/app/api/products/route";
 import mongoose from "mongoose";
 
@@ -46,22 +45,6 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const token = extractTokenFromRequest(request);
-    if (!token) {
-      return NextResponse.json(
-        { error: "Unauthorized. Admin privileges required." },
-        { status: 401 }
-      );
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded || decoded.role !== "admin") {
-      return NextResponse.json(
-        { error: "Forbidden. Admin privileges required." },
-        { status: 403 }
-      );
-    }
-
     await connectToDatabase();
     const resolvedParams = await params;
     const { id } = resolvedParams;
@@ -97,22 +80,6 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const token = extractTokenFromRequest(request);
-    if (!token) {
-      return NextResponse.json(
-        { error: "Unauthorized. Admin privileges required." },
-        { status: 401 }
-      );
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded || decoded.role !== "admin") {
-      return NextResponse.json(
-        { error: "Forbidden. Admin privileges required." },
-        { status: 403 }
-      );
-    }
-
     await connectToDatabase();
     const resolvedParams = await params;
     const { id } = resolvedParams;
