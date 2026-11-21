@@ -3,7 +3,13 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { Product } from "@/models/Product";
 
 interface CacheEntry {
-  data: { products: unknown[]; total: number };
+  data: {
+    products: unknown[];
+    total: number;
+    page: number;
+    totalPages: number;
+    limit: number;
+  };
   timestamp: number;
 }
 
@@ -26,9 +32,11 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search");
     const featured = searchParams.get("featured");
     const sort = searchParams.get("sort");
-    const limit = parseInt(searchParams.get("limit") || "50", 10);
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+    const limit = Math.max(1, parseInt(searchParams.get("limit") || "12", 10));
+    const skip = (page - 1) * limit;
 
-    const cacheKey = `${category || ""}:${search || ""}:${featured || ""}:${sort || ""}:${limit}`;
+    const cacheKey = `${category || ""}:${search || ""}:${featured || ""}:${sort || ""}:${limit}:${page}`;
 
     const cached = productsMemoryCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
@@ -69,19 +77,28 @@ export async function GET(request: NextRequest) {
       sortQuery = { createdAt: -1 };
     }
 
-    const products = await Product.find(filter)
-      .sort(sortQuery)
-      .limit(limit)
-      .lean();
+    const [products, total] = await Promise.all([
+      Product.find(filter)
+        .sort(sortQuery)
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Product.countDocuments(filter),
+    ]);
 
     const formattedProducts = products.map((p) => ({
       ...p,
       id: p._id.toString(),
     }));
 
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+
     const responsePayload = {
       products: formattedProducts,
-      total: formattedProducts.length,
+      total,
+      page,
+      totalPages,
+      limit,
     };
 
     if (productsMemoryCache.size >= MAX_CACHE_ENTRIES) {
@@ -101,7 +118,7 @@ export async function GET(request: NextRequest) {
     const message =
       error instanceof Error ? error.message : "Failed to fetch products";
     return NextResponse.json(
-      { error: message, products: [], total: 0 },
+      { error: message, products: [], total: 0, page: 1, totalPages: 1, limit: 12 },
       { status: 500 }
     );
   }

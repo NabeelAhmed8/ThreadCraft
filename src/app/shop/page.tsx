@@ -7,6 +7,7 @@ import { getProducts } from "@/lib/api";
 import ProductCard from "@/components/product/ProductCard";
 import { ProductGridSkeleton } from "@/components/product/ProductSkeleton";
 import BackendStatusAlert from "@/components/common/BackendStatusAlert";
+import Pagination from "@/components/common/Pagination";
 import { SlidersHorizontal } from "lucide-react";
 
 const CATEGORIES = [
@@ -17,15 +18,20 @@ const CATEGORIES = [
   { label: "Casual & Tees", value: "casual" },
 ];
 
+const ITEMS_PER_PAGE = 8;
+
 function ShopContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams.get("category") || "";
   const search = searchParams.get("search") || "";
+  const pageParam = parseInt(searchParams.get("page") || "1", 10);
+  const currentPage = isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
 
   const [sort, setSort] = useState("newest");
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reloadTrigger, setReloadTrigger] = useState(0);
@@ -39,6 +45,8 @@ function ShopContent() {
           category: category || undefined,
           search: search || undefined,
           sort,
+          page: currentPage,
+          limit: ITEMS_PER_PAGE,
         });
 
         if (!active) return;
@@ -47,9 +55,12 @@ function ShopContent() {
           setError(res.error);
           setProducts([]);
           setTotal(0);
+          setTotalPages(1);
         } else {
           setProducts(res.products || []);
-          setTotal(res.total || res.products.length);
+          const totalItems = res.total ?? 0;
+          setTotal(totalItems);
+          setTotalPages(res.totalPages || Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE)));
           setError(null);
         }
       } catch (err: unknown) {
@@ -59,6 +70,7 @@ function ShopContent() {
         );
         setProducts([]);
         setTotal(0);
+        setTotalPages(1);
       } finally {
         if (active) {
           setLoading(false);
@@ -71,7 +83,7 @@ function ShopContent() {
     return () => {
       active = false;
     };
-  }, [category, search, sort, reloadTrigger]);
+  }, [category, search, sort, currentPage, reloadTrigger]);
 
   const handleRetry = () => {
     setLoading(true);
@@ -87,8 +99,33 @@ function ShopContent() {
     } else {
       params.delete("category");
     }
+    params.delete("page"); // Reset to page 1 on category change
     router.push(`/shop?${params.toString()}`);
   };
+
+  const handleSortChange = (newSort: string) => {
+    setLoading(true);
+    setSort(newSort);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("page"); // Reset to page 1 on sort change
+    router.push(`/shop?${params.toString()}`);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage === currentPage || newPage < 1 || newPage > totalPages) return;
+    setLoading(true);
+    const params = new URLSearchParams(searchParams.toString());
+    if (newPage > 1) {
+      params.set("page", newPage.toString());
+    } else {
+      params.delete("page");
+    }
+    router.push(`/shop?${params.toString()}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const startRange = total === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endRange = Math.min(currentPage * ITEMS_PER_PAGE, total);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -133,10 +170,7 @@ function ShopContent() {
             name="sort"
             autoComplete="off"
             value={sort}
-            onChange={(e) => {
-              setLoading(true);
-              setSort(e.target.value);
-            }}
+            onChange={(e) => handleSortChange(e.target.value)}
             className="text-xs bg-white border border-neutral-300 rounded px-2.5 py-1.5 text-neutral-800 focus:outline-none focus:ring-1 focus:ring-black"
           >
             <option value="newest">Newest First</option>
@@ -147,7 +181,7 @@ function ShopContent() {
       </div>
 
       <div className="py-4 text-xs text-neutral-500">
-        {!loading && !error && `Showing ${products.length} of ${total} items`}
+        {!loading && !error && total > 0 && `Showing ${startRange}–${endRange} of ${total} items`}
       </div>
 
       {loading && <ProductGridSkeleton count={8} />}
@@ -168,15 +202,24 @@ function ShopContent() {
       )}
 
       {!loading && !error && products.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
-          {products.map((product, idx) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              priority={idx < 4}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+            {products.map((product, idx) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                priority={idx < 4}
+              />
+            ))}
+          </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            className="mt-12 pt-8 border-t border-neutral-100"
+          />
+        </>
       )}
     </div>
   );

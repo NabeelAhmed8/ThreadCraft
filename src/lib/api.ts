@@ -15,12 +15,22 @@ interface FetchProductsOptions {
   search?: string;
   sort?: "price_asc" | "price_desc" | "newest" | string;
   limit?: number;
+  page?: number;
   featured?: boolean;
+}
+
+export interface ProductsResponse {
+  products: Product[];
+  total: number;
+  page?: number;
+  totalPages?: number;
+  limit?: number;
+  error?: string;
 }
 
 export async function getProducts(
   options: FetchProductsOptions = {}
-): Promise<{ products: Product[]; total: number; error?: string }> {
+): Promise<ProductsResponse> {
   try {
     const baseUrl = getBaseUrl();
     const query = new URLSearchParams();
@@ -28,6 +38,7 @@ export async function getProducts(
     if (options.search) query.append("search", options.search);
     if (options.sort) query.append("sort", options.sort);
     if (options.limit) query.append("limit", options.limit.toString());
+    if (options.page) query.append("page", options.page.toString());
     if (options.featured) query.append("featured", "true");
 
     const url = `${baseUrl}/products?${query.toString()}`;
@@ -44,16 +55,19 @@ export async function getProducts(
 
     const data = await res.json();
     if (Array.isArray(data)) {
-      return { products: data, total: data.length };
+      return { products: data, total: data.length, page: 1, totalPages: 1 };
     }
     return {
       products: Array.isArray(data.products) ? data.products : (data.data || []),
-      total: data.total || (data.products ? data.products.length : 0),
+      total: typeof data.total === "number" ? data.total : (data.products ? data.products.length : 0),
+      page: data.page || options.page || 1,
+      totalPages: data.totalPages || 1,
+      limit: data.limit || options.limit,
     };
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "Unable to load products right now";
-    return { products: [], total: 0, error: errorMessage };
+    return { products: [], total: 0, page: 1, totalPages: 1, error: errorMessage };
   }
 }
 
